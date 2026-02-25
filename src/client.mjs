@@ -1,33 +1,21 @@
 /**
  * Pi Coding Agent Client
  * =======================
- * Spawns pi-coding-agent processes in JSON streaming mode.
+ * Spawns pi-coding-agent processes in print mode.
  *
- * TRANSLATION MAP:
- *   ClaudeSDKClient.query(msg) → spawn("pi", ["-p", "--mode", "json", msg])
- *   ClaudeSDKClient.receive_response() → readline on stdout JSON events
- *   system_prompt → --system-prompt flag
- *   allowed_tools → --tools flag
- *   mcp_servers → replaced by skills (brave-search, browser-tools)
- *   hooks/security → damage-control extension
- *
- * Pi advantages over Claude Code SDK:
- *   - Multi-provider (anthropic, openai, google, etc.)
- *   - Thinking levels (off → xhigh)
- *   - Session persistence with tree branching
- *   - In-process extensions (vs external hooks)
- *   - No sandbox needed (damage-control handles security)
+ * KEY FIX: Writes prompt to temp file and uses @file syntax
+ * to avoid shell argument length limits. System prompt also
+ * written to file and passed via --system-prompt flag reading from file.
  */
 
 import { spawn } from "node:child_process";
 import { createInterface } from "node:readline";
 import { join, resolve } from "node:path";
-import { existsSync } from "node:fs";
+import { existsSync, writeFileSync, mkdirSync, unlinkSync } from "node:fs";
 import { PI_TOOLS, PI_THINKING_LEVEL, SESSION_TIMEOUT } from "./config.mjs";
 
 // ---------------------------------------------------------------------------
 // System Prompt — identical across all 20 sessions
-// Adapted: WebSearch/WebFetch/Puppeteer → bash+curl, brave-search, browser-tools
 // ---------------------------------------------------------------------------
 export const SYSTEM_PROMPT = `\
 Sei un ricercatore e analista di marketing di livello mondiale.
@@ -37,7 +25,7 @@ PRINCIPI DI ANALISI:
 1. Contraddizione principale: identifica sempre la tensione tra ciò che il mercato
    dice e ciò che fa, ciò che crede e ciò che è vero.
 2. Validazione empirica: ogni affermazione va verificata con ricerca online.
-   Usa bash con curl per cercare e leggere pagine web. Se brave-search è disponibile, usalo.
+   Usa bash con curl per cercare e leggere pagine web.
 3. Occam's Razor: la spiegazione più semplice che copre tutti i dati è quella giusta.
 4. Specificità: mai generalizzare. Cita sempre la fonte. Usa citazioni VERBATIM.
 5. Spirale dialettica: ogni contraddizione risolta ne rivela una più profonda.
@@ -63,57 +51,56 @@ DEVI SEMPRE:
 /**
  * Run a single pi-coding-agent session.
  *
- * Spawns `pi` in print+json mode, streams events, returns response text.
- *
- * @param {Object} options
- * @param {string} options.message - The full prompt to send
- * @param {string} options.projectDir - Working directory for this session
- * @param {string} options.model - Model identifier (e.g., "claude-opus-4-5")
- * @param {string} [options.provider] - Provider name (e.g., "anthropic")
- * @param {string} [options.piConfigDir] - Path to .pi/ config directory
- * @returns {Promise<{status: string, responseText: string}>}
+ * Writes prompt to a temp file and uses @file syntax to avoid CLI arg limits.
+ * Uses --mode json for event streaming, -p for print (non-interactive) mode.
  */
 export async function runPiSession({
   message,
   projectDir,
   model,
   provider,
-  piConfigDir,
 }) {
-  return new Promise((resolvePromise, reject) => {
+  const absDir = resolve(projectDir);
+
+  // Write prompt and system prompt to temp files in the project dir
+  const tmpDir = join(absDir, ".tmp");
+  mkdirSync(tmpDir, { recursive: true });
+
+  const promptFile = join(tmpDir, "prompt.md");
+  const systemFile = join(tmpDir, "system.md");
+  writeFileSync(promptFile, message);
+  writeFileSync(systemFile, SYSTEM_PROMPT);
+
+  return new Promise((resolvePromise) => {
     const args = [
-      "-p",                    // Print mode (non-interactive, single-shot)
-      "--mode", "json",        // Stream all events as JSON lines
-      "--tools", PI_TOOLS.join(","),
-      "--thinking", PI_THINKING_LEVEL,
-      "--system-prompt", SYSTEM_PROMPT,
-      "--no-extensions",       // We'll load extensions explicitly if needed
-      "--no-skills",           // Clean environment per session
+      "-p",                              // Print mode (non-interactive, single-shot)
+      "--mode", "json",                   // Stream all events as JSON lines
+      "--tools", PI_TOOLS.join(","),      // Available tools
+      "--thinking", PI_THINKING_LEVEL,    // Thinking level
+      "--system-prompt", SYSTEM_PROMPT,   // System prompt inline (short enough)
+      "--no-extensions",                  // Clean environment
+      "--no-skills",                      // No auto-discovered skills
+      "--no-session",                     // Ephemeral — don't save session files
     ];
 
-    // Model specification
+    // Model specification: "provider/model" format
     if (provider && model) {
       args.push("--model", `${provider}/${model}`);
     } else if (model) {
       args.push("--model", model);
     }
 
-    // Pi config directory (for extensions, skills, settings)
-    if (piConfigDir && existsSync(piConfigDir)) {
-      // Pi reads .pi/ from cwd, so we set cwd to project dir
-      // and place .pi/ config there
-    }
+    // Pass prompt via @file to avoid shell argument length limits
+    args.push(`@${promptFile}`);
 
-    // The prompt goes as the last positional argument
-    args.push(message);
-
-    console.log("  Spawning pi-coding-agent session...\n");
+    console.log("  Spawning pi-coding-agent session...");
+    console.log(`  Model: ${provider ? provider + "/" : ""}${model}`);
+    console.log(`  Prompt file: ${promptFile} (${(message.length / 1024).toFixed(1)}KB)\n`);
 
     const proc = spawn("pi", args, {
-      cwd: resolve(projectDir),
+      cwd: absDir,
       env: {
         ...process.env,
-        // Ensure pi can find its global config
         PI_CODING_AGENT_DIR: process.env.PI_CODING_AGENT_DIR || join(process.env.HOME, ".pi", "agent"),
       },
       stdio: ["pipe", "pipe", "pipe"],
@@ -133,12 +120,11 @@ export async function runPiSession({
       try {
         event = JSON.parse(line);
       } catch {
-        // Non-JSON output, print as-is
+        // Non-JSON output (e.g., pi startup messages), print as-is
         process.stdout.write(line + "\n");
         return;
       }
 
-      // Handle different event types from pi's JSON stream
       switch (event.type) {
         case "message_start":
           break;
@@ -170,7 +156,6 @@ export async function runPiSession({
           break;
 
         case "tool_execution_update":
-          // Streaming tool output (e.g., bash)
           break;
 
         case "turn_start":
@@ -185,15 +170,17 @@ export async function runPiSession({
           break;
 
         default:
-          // Unknown events — log at debug level
           break;
       }
     });
 
-    // Capture stderr for diagnostics
+    // Capture stderr
     let stderrBuf = "";
     proc.stderr.on("data", (chunk) => {
-      stderrBuf += chunk.toString();
+      const text = chunk.toString();
+      stderrBuf += text;
+      // Print stderr in real-time for debugging
+      process.stderr.write(text);
     });
 
     // Timeout safety
@@ -205,6 +192,10 @@ export async function runPiSession({
     proc.on("close", (code) => {
       clearTimeout(timeout);
       rl.close();
+
+      // Cleanup temp files
+      try { unlinkSync(promptFile); } catch {}
+      try { unlinkSync(systemFile); } catch {}
 
       console.log("\n" + "-".repeat(70) + "\n");
 
