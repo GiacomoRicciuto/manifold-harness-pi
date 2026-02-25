@@ -105,7 +105,7 @@ export async function runPiSession({
         ...process.env,
         PI_CODING_AGENT_DIR: process.env.PI_CODING_AGENT_DIR || join(process.env.HOME, ".pi", "agent"),
       },
-      stdio: ["pipe", "pipe", "pipe"],
+      stdio: ["ignore", "pipe", "pipe"],  // CRITICAL: ignore stdin or pi hangs waiting for input
     });
 
     let responseText = "";
