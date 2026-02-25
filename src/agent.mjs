@@ -25,7 +25,7 @@ function sleep(seconds) {
  * Assemble avatar_manifold.txt from all chapter files in chapters/ directory.
  * This replaces the previous approach where the agent had to manually append.
  */
-function assembleManifold(projectDir) {
+function assembleManifold(projectDir, clientName, productInfo) {
   const chaptersDir = join(projectDir, "chapters");
   if (!existsSync(chaptersDir)) return;
 
@@ -35,7 +35,20 @@ function assembleManifold(projectDir) {
 
   if (files.length === 0) return;
 
-  const header = `# AVATAR MANIFOLD — Documento Assemblato Automaticamente\n# Capitoli: ${files.length}\n# Ultimo aggiornamento: ${new Date().toISOString()}\n\n`;
+  // Extract market from productInfo (first line or short summary)
+  const productLines = (productInfo || "").split("\n").filter(l => l.trim());
+  const marketLine = productLines[0] || clientName || "Market Research Brief";
+
+  // Header format expected by generate_pdf.py parser:
+  // - "# Title" → doc_title (first # line that is NOT CAPITOLO)
+  // - Line with "— " → doc_subtitle
+  // - Line with "Mercato" → doc_market
+  const title = clientName || "Avatar Manifold";
+  const subtitle = `${title} — Ricerca di Mercato Professionale`;
+  const market = `Mercato: ${marketLine}`;
+  const date = new Date().toLocaleDateString("it-IT", { month: "long", year: "numeric" });
+
+  const header = `# ${title}\n${subtitle}\n# ${market}\n# Data: ${date}\n# Capitoli: ${files.length}\n\n`;
 
   const content = files.map((f) => {
     return readFileSync(join(chaptersDir, f), "utf-8");
@@ -113,7 +126,7 @@ export async function runManifoldAgent({
       // Auto-assemble avatar_manifold.txt from all chapter files after each Cycle 2 step
       // (skip assembly for pdf_generation — it consumes the already-assembled file)
       if (cycle === CYCLE_MANIFOLD && step.id !== "pdf_generation") {
-        assembleManifold(absDir);
+        assembleManifold(absDir, clientName, productInfo);
       }
       state = advanceStep(absDir, state);
       printProgressSummary(state);
