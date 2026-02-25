@@ -11,7 +11,7 @@
 import { spawn } from "node:child_process";
 import { createInterface } from "node:readline";
 import { join, resolve } from "node:path";
-import { existsSync, writeFileSync, mkdirSync, unlinkSync } from "node:fs";
+import { existsSync, writeFileSync, mkdirSync, unlinkSync, cpSync } from "node:fs";
 import { PI_TOOLS, PI_THINKING_LEVEL, SESSION_TIMEOUT } from "./config.mjs";
 
 // ---------------------------------------------------------------------------
@@ -62,22 +62,24 @@ export async function runPiSession({
 }) {
   const absDir = resolve(projectDir);
 
-  // Write prompt and system prompt to temp files in the project dir
+  // Write prompt to temp file (avoids CLI arg length limits)
   const tmpDir = join(absDir, ".tmp");
   mkdirSync(tmpDir, { recursive: true });
 
   const promptFile = join(tmpDir, "prompt.md");
-  const systemFile = join(tmpDir, "system.md");
   writeFileSync(promptFile, message);
-  writeFileSync(systemFile, SYSTEM_PROMPT);
+
+  // Write SYSTEM.md into project .pi/ so pi picks it up from cwd
+  const piDir = join(absDir, ".pi");
+  mkdirSync(piDir, { recursive: true });
+  writeFileSync(join(piDir, "SYSTEM.md"), SYSTEM_PROMPT);
 
   return new Promise((resolvePromise) => {
     const args = [
       "-p",                              // Print mode (non-interactive, single-shot)
       "--mode", "json",                   // Stream all events as JSON lines
       "--tools", PI_TOOLS.join(","),      // Available tools
-      "--thinking", PI_THINKING_LEVEL,    // Thinking level
-      "--system-prompt", SYSTEM_PROMPT,   // System prompt inline (short enough)
+      "--thinking", "off",               // No thinking for faster execution
       "--no-extensions",                  // Clean environment
       "--no-skills",                      // No auto-discovered skills
       "--no-session",                     // Ephemeral — don't save session files
@@ -126,7 +128,22 @@ export async function runPiSession({
       }
 
       switch (event.type) {
+        case "session":
+          console.log("  [pi] Session created");
+          break;
+
+        case "agent_start":
+          console.log("  [pi] Agent started — waiting for model response...");
+          break;
+
+        case "turn_start":
+          console.log("  [pi] Turn started");
+          break;
+
         case "message_start":
+          if (event.message?.role === "assistant") {
+            console.log("  [pi] Assistant responding...");
+          }
           break;
 
         case "message_update":
@@ -158,10 +175,12 @@ export async function runPiSession({
         case "tool_execution_update":
           break;
 
-        case "turn_start":
         case "turn_end":
-        case "agent_start":
+          console.log("  [pi] Turn ended");
+          break;
+
         case "agent_end":
+          console.log("  [pi] Agent finished");
           break;
 
         case "error":
@@ -170,6 +189,8 @@ export async function runPiSession({
           break;
 
         default:
+          // Log unknown events for debugging
+          console.log(`  [pi:${event.type}]`);
           break;
       }
     });
