@@ -11,7 +11,7 @@
 import { spawn } from "node:child_process";
 import { createInterface } from "node:readline";
 import { join, resolve } from "node:path";
-import { existsSync, writeFileSync, mkdirSync, unlinkSync, cpSync } from "node:fs";
+import { existsSync, writeFileSync, mkdirSync, unlinkSync, cpSync, appendFileSync } from "node:fs";
 import { PI_TOOLS, PI_THINKING_LEVEL, SESSION_TIMEOUT } from "./config.mjs";
 
 // ---------------------------------------------------------------------------
@@ -111,6 +111,9 @@ export async function runPiSession({
     let responseText = "";
     let lastError = "";
     let toolCalls = 0;
+    let totalCost = 0;
+    let totalInputTokens = 0;
+    let totalOutputTokens = 0;
 
     // Parse JSON event stream from stdout
     const rl = createInterface({ input: proc.stdout });
@@ -155,6 +158,13 @@ export async function runPiSession({
           break;
 
         case "message_end":
+          // Extract cost data from assistant message_end events
+          if (event.message?.role === "assistant" && event.message?.usage) {
+            const u = event.message.usage;
+            totalInputTokens = u.input || 0;
+            totalOutputTokens = u.output || 0;
+            if (u.cost?.total) totalCost = u.cost.total;
+          }
           break;
 
         case "tool_execution_start":
@@ -222,6 +232,21 @@ export async function runPiSession({
 
       if (code === 0) {
         console.log(`  Session complete. Tool calls: ${toolCalls}`);
+        console.log(`  Tokens — input: ${totalInputTokens.toLocaleString()} | output: ${totalOutputTokens.toLocaleString()}`);
+        console.log(`  Cost: $${totalCost.toFixed(4)} (€${(totalCost * 0.92).toFixed(4)})`);
+
+        // Append cost to cumulative log file
+        try {
+          const costLine = JSON.stringify({
+            timestamp: new Date().toISOString(),
+            input_tokens: totalInputTokens,
+            output_tokens: totalOutputTokens,
+            cost_usd: totalCost,
+            tool_calls: toolCalls,
+          }) + "\n";
+          appendFileSync(join(absDir, "costs.jsonl"), costLine);
+        } catch {}
+
         resolvePromise({ status: "continue", responseText });
       } else {
         const errMsg = lastError || stderrBuf.substring(0, 500) || `Exit code ${code}`;
