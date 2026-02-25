@@ -158,14 +158,20 @@ ${RESEARCH_PREAMBLE}
 // PDF generation prompt builder
 // ---------------------------------------------------------------------------
 
-function buildPdfPrompt(step, projectDir) {
+function buildPdfPrompt(step, projectDir, productInfo, clientName) {
   const template = loadTemplate(step.prompt_file);
   const pdfScript = resolve(join(__dirname, "..", "scripts", "generate_pdf.py"));
 
+  const title = clientName || "Market Research Brief";
+  const subtitle = (productInfo || "").split("\n")[0] || "";
+
+  const cmd = `python3 "${pdfScript}" avatar_manifold.txt avatar_manifold_professional.pdf --title "${title}" --subtitle "${subtitle}"`;
+
   const context = `\
-SCRIPT PDF: ${pdfScript}
-INPUT FILE: avatar_manifold.txt (nella directory di lavoro corrente)
-OUTPUT FILE: avatar_manifold_professional.pdf (nella directory di lavoro corrente)
+COMANDO ESATTO DA ESEGUIRE:
+\`\`\`bash
+${cmd}
+\`\`\`
 
 `;
   return context + template;
@@ -175,13 +181,13 @@ OUTPUT FILE: avatar_manifold_professional.pdf (nella directory di lavoro corrent
 // Public API
 // ---------------------------------------------------------------------------
 
-export function buildPrompt(cycle, step, projectDir, productInfo) {
+export function buildPrompt(cycle, step, projectDir, productInfo, clientName) {
   if (cycle === CYCLE_RESEARCH) {
     return buildC1Prompt(step, projectDir, productInfo);
   } else if (cycle === CYCLE_MANIFOLD) {
     // PDF generation step — special prompt builder (no research context needed)
     if (step.id === "pdf_generation") {
-      return buildPdfPrompt(step, projectDir);
+      return buildPdfPrompt(step, projectDir, productInfo, clientName);
     }
     return buildC2Prompt(step, projectDir, productInfo);
   }

@@ -7,11 +7,7 @@ Trasformare il file `avatar_manifold.txt` in un PDF professionale decorato e col
 
 1. **Verifica** che il file `avatar_manifold.txt` esista nella directory corrente. Leggilo brevemente per confermare che contenga i capitoli del manifold.
 
-2. **Esegui** lo script Python di generazione PDF:
-   ```bash
-   python3 {SCRIPT_PATH} avatar_manifold.txt avatar_manifold_professional.pdf
-   ```
-   Dove `{SCRIPT_PATH}` e' il percorso completo allo script indicato nel contesto sopra.
+2. **Esegui** lo script Python di generazione PDF con il comando ESATTO fornito nel contesto sopra (include --title e --subtitle personalizzati). Copia e incolla il comando senza modificarlo.
 
 3. **Verifica** che il file `avatar_manifold_professional.pdf` sia stato creato correttamente:
    ```bash

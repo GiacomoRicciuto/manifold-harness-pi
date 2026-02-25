@@ -970,17 +970,21 @@ hr.section-divider {{
 # ── MAIN ─────────────────────────────────────────────────────────────────────
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python generate_pdf.py <input.md> [output.pdf]")
-        sys.exit(1)
+    import argparse
+    parser = argparse.ArgumentParser(description="Generate professional PDF from manifold markdown")
+    parser.add_argument("input", help="Input markdown file")
+    parser.add_argument("output", nargs="?", help="Output PDF file")
+    parser.add_argument("--title", help="Override document title (client/project name)")
+    parser.add_argument("--subtitle", help="Override document subtitle (product description)")
+    args = parser.parse_args()
 
-    input_path = Path(sys.argv[1])
+    input_path = Path(args.input)
     if not input_path.exists():
         print(f"Error: File not found: {input_path}")
         sys.exit(1)
 
     output_path = (
-        Path(sys.argv[2]) if len(sys.argv) > 2
+        Path(args.output) if args.output
         else input_path.with_name(input_path.stem + "_professional.pdf")
     )
 
@@ -993,6 +997,17 @@ def main():
 
     print("📐 Parsing document structure...")
     doc = parse_markdown(content)
+
+    # Override title/subtitle from CLI args (project metadata)
+    if args.title:
+        doc['title'] = args.title
+        if not doc['subtitle']:
+            doc['subtitle'] = f"{args.title} — Ricerca di Mercato Professionale"
+    if args.subtitle:
+        doc['subtitle'] = args.subtitle
+        if not doc['market']:
+            doc['market'] = args.subtitle
+
     print(f"   Title: {doc['title']}")
     print(f"   Chapters: {len(doc['chapters'])}")
 

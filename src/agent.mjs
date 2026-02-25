@@ -111,7 +111,7 @@ export async function runManifoldAgent({
     printSessionHeader(iteration, step.name);
 
     // Build prompt with context injection
-    const prompt = buildPrompt(cycle, step, absDir, productInfo);
+    const prompt = buildPrompt(cycle, step, absDir, productInfo, clientName);
 
     // Run pi session
     const { status, responseText } = await runPiSession({
