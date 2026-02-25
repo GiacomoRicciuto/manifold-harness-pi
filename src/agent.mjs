@@ -6,9 +6,10 @@
  * TRANSLATION: Python async loop → Node.js async/await with pi spawn
  */
 
-import { resolve } from "node:path";
+import { resolve, join } from "node:path";
+import { readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import { runPiSession } from "./client.mjs";
-import { AUTO_CONTINUE_DELAY } from "./config.mjs";
+import { AUTO_CONTINUE_DELAY, CYCLE_MANIFOLD } from "./config.mjs";
 import {
   loadState, saveState, initState,
   getNextAction, advanceStep,
@@ -18,6 +19,30 @@ import { buildPrompt } from "./prompts.mjs";
 
 function sleep(seconds) {
   return new Promise((r) => setTimeout(r, seconds * 1000));
+}
+
+/**
+ * Assemble avatar_manifold.txt from all chapter files in chapters/ directory.
+ * This replaces the previous approach where the agent had to manually append.
+ */
+function assembleManifold(projectDir) {
+  const chaptersDir = join(projectDir, "chapters");
+  if (!existsSync(chaptersDir)) return;
+
+  const files = readdirSync(chaptersDir)
+    .filter((f) => f.endsWith(".txt"))
+    .sort();
+
+  if (files.length === 0) return;
+
+  const header = `# AVATAR MANIFOLD — Documento Assemblato Automaticamente\n# Capitoli: ${files.length}\n# Ultimo aggiornamento: ${new Date().toISOString()}\n\n`;
+
+  const content = files.map((f) => {
+    return readFileSync(join(chaptersDir, f), "utf-8");
+  }).join("\n\n" + "=".repeat(80) + "\n\n");
+
+  writeFileSync(join(projectDir, "avatar_manifold.txt"), header + content);
+  console.log(`  [Auto-assembled avatar_manifold.txt from ${files.length} chapters]`);
 }
 
 /**
@@ -81,9 +106,15 @@ export async function runManifoldAgent({
       projectDir: absDir,
       model,
       provider,
+      cycle,
     });
 
     if (status === "continue") {
+      // Auto-assemble avatar_manifold.txt from all chapter files after each Cycle 2 step
+      // (skip assembly for pdf_generation — it consumes the already-assembled file)
+      if (cycle === CYCLE_MANIFOLD && step.id !== "pdf_generation") {
+        assembleManifold(absDir);
+      }
       state = advanceStep(absDir, state);
       printProgressSummary(state);
       console.log(`\nNext session in ${AUTO_CONTINUE_DELAY}s...`);
@@ -102,6 +133,7 @@ export async function runManifoldAgent({
   console.log(`\n  Output: ${absDir}`);
   console.log(`  Market Spec: ${absDir}/market_spec.txt`);
   console.log(`  Avatar Manifold: ${absDir}/avatar_manifold.txt`);
+  console.log(`  PDF: ${absDir}/avatar_manifold_professional.pdf`);
   console.log(`  Chapters: ${absDir}/chapters/`);
   printProgressSummary(state);
   console.log("\nDone!");

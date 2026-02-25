@@ -9,14 +9,15 @@
 // Models — Pi supports multi-provider. Default to Anthropic Claude Opus.
 // Override with --model flag (e.g., "openai/gpt-4o", "anthropic/claude-opus-4-5")
 // ---------------------------------------------------------------------------
-export const DEFAULT_MODEL = "claude-opus-4-5";
+export const DEFAULT_MODEL = "claude-opus-4-6";
 export const DEFAULT_PROVIDER = "anthropic";
 
 // ---------------------------------------------------------------------------
 // Timing
 // ---------------------------------------------------------------------------
 export const AUTO_CONTINUE_DELAY = 3; // seconds between sessions
-export const SESSION_TIMEOUT = 600000; // 10 min max per session (ms)
+export const SESSION_TIMEOUT_C1 = 600000;  // 10 min for Cycle 1 (lighter tasks)
+export const SESSION_TIMEOUT_C2 = 1800000; // 30 min for Cycle 2 (heavy research + writing)
 
 // ---------------------------------------------------------------------------
 // Pi-specific settings
@@ -90,6 +91,7 @@ export const C2_STEPS = [
   { id: "13_language_patterns", name: "13 — Language Patterns", prompt_file: "cycle2/13_language_patterns.md", chapter_file: "chapters/13_language_patterns.txt" },
   { id: "14_ccc", name: "14 — Concentric Circles of Concern", prompt_file: "cycle2/14_ccc.md", chapter_file: "chapters/14_ccc.txt" },
   { id: "15_ejection_triggers", name: "15 — Ejection Triggers", prompt_file: "cycle2/15_ejection_triggers.md", chapter_file: "chapters/15_ejection_triggers.txt" },
+  { id: "pdf_generation", name: "PDF Manifold Design", prompt_file: "cycle2/pdf_generation.md", chapter_file: null },
 ];
 
 // ---------------------------------------------------------------------------

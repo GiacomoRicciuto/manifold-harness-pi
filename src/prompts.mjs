@@ -13,6 +13,7 @@ import { readFileSync, readdirSync, existsSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CYCLE_RESEARCH, CYCLE_MANIFOLD } from "./config.mjs";
+import { resolve } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROMPTS_DIR = join(__dirname, "..", "prompts");
@@ -24,13 +25,24 @@ const RESEARCH_PREAMBLE = `\
 --- ISTRUZIONI DI RICERCA AUTONOMA ---
 
 Per questa analisi DEVI:
-1. Usare bash per cercare dati reali online:
-   - Per ricerche web: usa il comando bash con curl o wget per cercare informazioni
-   - Per leggere pagine web: usa bash con curl per scaricare e leggere contenuti
-2. Se la skill brave-search è disponibile, usala per ricerche strutturate.
-3. Se browser-tools è disponibile, usalo per navigare siti interattivi.
-4. Incrociare le fonti: mai fidarsi di una singola fonte.
-5. Citare SEMPRE la fonte (URL, autore, data) per ogni dato utilizzato.
+1. Usare bash per cercare dati reali online.
+2. Incrociare le fonti: mai fidarsi di una singola fonte.
+3. Citare SEMPRE la fonte (URL, autore, data) per ogni dato utilizzato.
+
+COME FARE RICERCA WEB — SEGUI QUESTE ISTRUZIONI ESATTAMENTE:
+
+REGOLA #1: Per leggere QUALSIASI pagina web, usa SEMPRE lynx:
+  curl -sL "URL" -H "User-Agent: Mozilla/5.0" | lynx -stdin -dump -nolist | head -200
+NON usare MAI curl da solo su HTML — spreca token con HTML/CSS/JS inutile.
+
+REGOLA #2: Per cercare sul web, usa DuckDuckGo HTML (Google/YouTube BLOCCANO curl):
+  curl -sL "https://html.duckduckgo.com/html/?q=query+terms" -H "User-Agent: Mozilla/5.0" | lynx -stdin -dump -nolist | head -80
+
+REGOLA #3: Per API JSON (es. Reddit), curl diretto va bene:
+  curl -s "https://www.reddit.com/r/sub/search.json?q=query&limit=20" -H "User-Agent: Mozilla/5.0"
+
+NON usare google.com/search (ritorna captcha). NON usare youtube.com/results (richiede JS).
+Usa SEMPRE html.duckduckgo.com per le ricerche e lynx per leggere le pagine trovate.
 
 PENSIERO CRITICO:
 - Identifica la contraddizione principale di questa analisi: cosa il mercato
@@ -100,11 +112,21 @@ ${RESEARCH_PREAMBLE}
 // Cycle 2 prompt builder
 // ---------------------------------------------------------------------------
 
+/**
+ * List completed chapters for reference (names only, not content).
+ */
+function listChapters(projectDir) {
+  const chaptersDir = join(projectDir, "chapters");
+  if (!existsSync(chaptersDir)) return [];
+  return readdirSync(chaptersDir)
+    .filter((f) => f.endsWith(".txt"))
+    .sort();
+}
+
 function buildC2Prompt(step, projectDir, productInfo) {
   const template = loadTemplate(step.prompt_file);
-  const marketSpec = readFileIfExists(projectDir, "market_spec.txt");
-  const manifold = readFileIfExists(projectDir, "avatar_manifold.txt");
   const chapterFile = step.chapter_file;
+  const chapters = listChapters(projectDir);
 
   const context = `\
 --- CONTESTO PROGETTO ---
@@ -112,25 +134,38 @@ function buildC2Prompt(step, projectDir, productInfo) {
 PRODOTTO/MERCATO:
 ${productInfo}
 
---- MARKET SPEC (output del Ciclo 1 — la tua base dati empirica) ---
-${marketSpec || "(non ancora generato)"}
---- FINE MARKET SPEC ---
-
---- AVATAR MANIFOLD (capitoli precedenti — costruisci su questo) ---
-${manifold || "(primo capitolo — nessun manifold precedente)"}
---- FINE AVATAR MANIFOLD ---
+FILE DISPONIBILI (leggili con "read" quando necessario — NON sono inclusi in questo prompt):
+- market_spec.txt — La tua base dati empirica dal Ciclo 1 (LEGGILO per primo)
+${chapters.length > 0 ? `- chapters/ — Capitoli precedenti completati:\n${chapters.map(f => `    - chapters/${f}`).join("\n")}` : "- (primo capitolo — nessun capitolo precedente)"}
 
 ${RESEARCH_PREAMBLE}
 
 --- ISTRUZIONI OUTPUT ---
-1. Scrivi il capitolo completo in: ${chapterFile}
-2. Dopo aver scritto il capitolo, APPENDILO anche a avatar_manifold.txt
-   (usa read per leggere il contenuto attuale, poi write per aggiungere il tuo capitolo in fondo).
-3. Salva eventuali ricerche in: research/
-4. Consulta i capitoli precedenti per coerenza e costruisci su ciò che è stato scoperto.
+1. PRIMA DI TUTTO: leggi market_spec.txt e gli ultimi 2 capitoli in chapters/ per contesto.
+2. Scrivi il capitolo completo in: ${chapterFile}
+3. NON appendere ad avatar_manifold.txt (viene assemblato automaticamente a fine processo).
+4. Salva eventuali ricerche in: research/
+5. Consulta i capitoli precedenti in chapters/ per coerenza e costruisci su ciò che è stato scoperto.
 --- FINE ISTRUZIONI OUTPUT ---
 
 --- FINE CONTESTO ---
+
+`;
+  return context + template;
+}
+
+// ---------------------------------------------------------------------------
+// PDF generation prompt builder
+// ---------------------------------------------------------------------------
+
+function buildPdfPrompt(step, projectDir) {
+  const template = loadTemplate(step.prompt_file);
+  const pdfScript = resolve(join(__dirname, "..", "scripts", "generate_pdf.py"));
+
+  const context = `\
+SCRIPT PDF: ${pdfScript}
+INPUT FILE: avatar_manifold.txt (nella directory di lavoro corrente)
+OUTPUT FILE: avatar_manifold_professional.pdf (nella directory di lavoro corrente)
 
 `;
   return context + template;
@@ -144,6 +179,10 @@ export function buildPrompt(cycle, step, projectDir, productInfo) {
   if (cycle === CYCLE_RESEARCH) {
     return buildC1Prompt(step, projectDir, productInfo);
   } else if (cycle === CYCLE_MANIFOLD) {
+    // PDF generation step — special prompt builder (no research context needed)
+    if (step.id === "pdf_generation") {
+      return buildPdfPrompt(step, projectDir);
+    }
     return buildC2Prompt(step, projectDir, productInfo);
   }
   throw new Error(`Cycle ${cycle} not yet implemented`);
