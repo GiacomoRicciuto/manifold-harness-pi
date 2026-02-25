@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Manifold Generator — Pi Edition</title>
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #1a1a24;
+    --surface2: #22223a;
+    --border: #2d2d44;
+    --primary: #6c5ce7;
+    --primary-light: #a29bfe;
+    --green: #00b894;
+    --red: #e17055;
+    --text: #dfe6e9;
+    --text-dim: #636e72;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+  h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+  h1 span { color: var(--primary-light); }
+  .subtitle { color: var(--text-dim); margin-bottom: 40px; font-size: 0.95rem; }
+  .pi-badge { display: inline-block; background: rgba(108,92,231,0.15); color: var(--primary-light); font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: 600; letter-spacing: 0.5px; }
+
+  /* Form */
+  .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; margin-bottom: 32px; }
+  .form-group { margin-bottom: 20px; }
+  label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--primary-light); text-transform: uppercase; letter-spacing: 0.5px; }
+  input[type="text"], textarea, select { width: 100%; padding: 12px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; font-family: inherit; outline: none; transition: border 0.2s; }
+  input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+  textarea { resize: vertical; min-height: 100px; }
+  select option { background: var(--surface2); color: var(--text); }
+
+  .form-row { display: flex; gap: 16px; }
+  .form-row .form-group { flex: 1; }
+
+  .file-upload { border: 2px dashed var(--border); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+  .file-upload:hover { border-color: var(--primary); }
+  .file-upload input { display: none; }
+  .file-upload p { color: var(--text-dim); font-size: 0.9rem; }
+  .file-list { margin-top: 8px; font-size: 0.85rem; color: var(--primary-light); }
+
+  .btn { display: inline-block; padding: 14px 32px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+  .btn:hover { opacity: 0.9; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-download { background: var(--green); margin-top: 16px; }
+  .btn-back { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 10px 20px; font-size: 0.85rem; margin-top: 16px; }
+
+  /* Progress */
+  .progress-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; }
+  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .progress-header h2 { font-size: 1.2rem; }
+  .progress-badge { font-size: 0.8rem; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+  .badge-running { background: rgba(108,92,231,0.2); color: var(--primary-light); }
+  .badge-done { background: rgba(0,184,148,0.2); color: var(--green); }
+  .badge-error { background: rgba(225,112,85,0.2); color: var(--red); }
+  .badge-queued { background: rgba(99,110,114,0.2); color: var(--text-dim); }
+  .badge-stopped { background: rgba(253,203,110,0.2); color: #fdcb6e; }
+
+  .btn-stop { background: var(--red); padding: 10px 24px; font-size: 0.85rem; margin-right: 8px; }
+  .btn-resume { background: var(--green); padding: 10px 24px; font-size: 0.85rem; margin-right: 8px; }
+  .btn-delete { background: transparent; border: 1px solid var(--red); color: var(--red); padding: 6px 12px; font-size: 0.75rem; border-radius: 6px; cursor: pointer; }
+  .btn-delete:hover { background: rgba(225,112,85,0.15); }
+
+  .steps-list { list-style: none; }
+  .step { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+  .step:last-child { border-bottom: none; }
+  .step-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; }
+  .step-done .step-icon { background: var(--green); color: #fff; }
+  .step-running .step-icon { background: var(--primary); color: #fff; animation: pulse 1.5s infinite; }
+  .step-pending .step-icon { background: var(--surface2); color: var(--text-dim); }
+  .step-name { font-size: 0.9rem; }
+  .step-pending .step-name { color: var(--text-dim); }
+  .step-num { font-size: 0.75rem; color: var(--text-dim); min-width: 24px; }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  .done-message { text-align: center; padding: 32px 0; }
+  .done-message h2 { color: var(--green); margin-bottom: 8px; }
+  .error-message { color: var(--red); margin-top: 12px; font-size: 0.9rem; }
+
+  /* Jobs list */
+  .jobs-section { margin-top: 40px; }
+  .jobs-section h3 { font-size: 1rem; color: var(--text-dim); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .job-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: border-color 0.2s; }
+  .job-card:hover { border-color: var(--primary); }
+  .job-name { font-weight: 600; }
+  .job-meta { font-size: 0.8rem; color: var(--text-dim); }
+
+  /* Console log */
+  .console-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-top: 16px; overflow: hidden; }
+  .console-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); cursor: pointer; }
+  .console-header h3 { font-size: 0.85rem; color: var(--primary-light); text-transform: uppercase; letter-spacing: 0.5px; }
+  .console-header .toggle { font-size: 0.8rem; color: var(--text-dim); }
+  .console-body { background: #0a0a10; padding: 16px; max-height: 400px; overflow-y: auto; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.8rem; line-height: 1.5; color: #a0aec0; white-space: pre-wrap; word-break: break-word; }
+  .console-body .log-tool { color: var(--primary-light); }
+  .console-body .log-error { color: var(--red); }
+  .console-body .log-session { color: var(--green); font-weight: 600; }
+  .console-body .log-done { color: var(--text-dim); }
+  .console-collapsed .console-body { display: none; }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1><span>AI</span> Manifold Generator <span class="pi-badge">pi-coding-agent</span></h1>
+  <p class="subtitle">Genera Avatar Manifold professionali con intelligenza artificiale — powered by pi</p>
+
+  <!-- VIEW: Form -->
+  <div id="view-form">
+    <div class="form-card">
+      <form id="job-form">
+        <div class="form-group">
+          <label>Nome Cliente</label>
+          <input type="text" id="client-name" placeholder="Es: TestoMax Italia" required>
+        </div>
+        <div class="form-group">
+          <label>Descrizione Prodotto / Mercato</label>
+          <textarea id="product-info" placeholder="Descrivi il prodotto, il mercato target, e qualsiasi contesto rilevante..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>File di Contesto (opzionale)</label>
+          <div class="file-upload" id="file-drop">
+            <p>Trascina file qui o clicca per selezionare</p>
+            <p style="font-size:0.8rem; margin-top:4px">(Swipe files, survey, materiale marketing)</p>
+            <input type="file" id="file-input" multiple>
+            <div class="file-list" id="file-list"></div>
+          </div>
+        </div>
+        <button type="submit" class="btn" id="submit-btn">Genera Manifold</button>
+      </form>
+    </div>
+
+    <div class="jobs-section" id="jobs-section">
+      <h3>Job precedenti</h3>
+      <div id="jobs-list"></div>
+    </div>
+  </div>
+
+  <!-- VIEW: Progress -->
+  <div id="view-progress" class="hidden">
+    <div class="progress-card">
+      <div class="progress-header">
+        <h2 id="progress-title">Generating...</h2>
+        <span class="progress-badge badge-running" id="progress-badge">In corso</span>
+      </div>
+      <ul class="steps-list" id="steps-list"></ul>
+      <div id="job-controls" style="margin-top:16px;" class="hidden">
+        <button class="btn btn-stop" id="stop-btn">Ferma Job</button>
+        <button class="btn btn-resume hidden" id="resume-btn">Riprendi Job</button>
+      </div>
+      <div id="done-area" class="hidden">
+        <div class="done-message">
+          <h2>Manifold Completato!</h2>
+          <p>Tutti i 20 step sono stati completati con successo.</p>
+          <button class="btn btn-download" id="download-btn">Scarica ZIP</button>
+        </div>
+      </div>
+      <div id="error-area" class="hidden">
+        <p class="error-message" id="error-text"></p>
+      </div>
+      <button class="btn btn-back" id="back-btn">Torna alla home</button>
+    </div>
+
+    <!-- Live Console -->
+    <div class="console-card" id="console-card">
+      <div class="console-header" id="console-toggle">
+        <h3>Live Console</h3>
+        <span class="toggle" id="toggle-label">Nascondi</span>
+      </div>
+      <div class="console-body" id="console-body"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let currentJobId = null;
+let pollTimer = null;
+let logTimer = null;
+let logOffset = 0;
+
+// File upload
+const fileDrop = document.getElementById('file-drop');
+const fileInput = document.getElementById('file-input');
+const fileList = document.getElementById('file-list');
+let selectedFiles = [];
+
+fileDrop.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', (e) => {
+  selectedFiles = Array.from(e.target.files);
+  fileList.textContent = selectedFiles.map(f => f.name).join(', ');
+});
+fileDrop.addEventListener('dragover', (e) => { e.preventDefault(); fileDrop.style.borderColor = 'var(--primary)'; });
+fileDrop.addEventListener('dragleave', () => { fileDrop.style.borderColor = 'var(--border)'; });
+fileDrop.addEventListener('drop', (e) => {
+  e.preventDefault();
+  fileDrop.style.borderColor = 'var(--border)';
+  selectedFiles = Array.from(e.dataTransfer.files);
+  fileList.textContent = selectedFiles.map(f => f.name).join(', ');
+});
+
+// Submit form
+document.getElementById('job-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Avvio in corso...';
+
+  const fd = new FormData();
+  fd.append('client_name', document.getElementById('client-name').value);
+  fd.append('product_info', document.getElementById('product-info').value);
+  selectedFiles.forEach(f => fd.append('files', f));
+
+  try {
+    const res = await fetch(`${API}/api/jobs`, { method: 'POST', body: fd });
+    const data = await res.json();
+    showProgress(data.job_id);
+  } catch (err) {
+    alert('Errore: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Genera Manifold';
+  }
+});
+
+// Console toggle
+document.getElementById('console-toggle').addEventListener('click', () => {
+  const card = document.getElementById('console-card');
+  const label = document.getElementById('toggle-label');
+  card.classList.toggle('console-collapsed');
+  label.textContent = card.classList.contains('console-collapsed') ? 'Mostra' : 'Nascondi';
+});
+
+// Show progress view
+function showProgress(jobId) {
+  currentJobId = jobId;
+  logOffset = 0;
+  document.getElementById('console-body').textContent = '';
+  document.getElementById('view-form').classList.add('hidden');
+  document.getElementById('view-progress').classList.remove('hidden');
+  document.getElementById('done-area').classList.add('hidden');
+  document.getElementById('error-area').classList.add('hidden');
+  pollStatus();
+  pollLogs();
+  pollTimer = setInterval(pollStatus, 5000);
+  logTimer = setInterval(pollLogs, 3000);
+}
+
+async function pollStatus() {
+  if (!currentJobId) return;
+  try {
+    const res = await fetch(`${API}/api/jobs/${currentJobId}/status`);
+    const data = await res.json();
+    renderProgress(data);
+  } catch (err) {
+    console.error('Poll error:', err);
+  }
+}
+
+function renderProgress(data) {
+  document.getElementById('progress-title').textContent = data.client_name;
+
+  const badge = document.getElementById('progress-badge');
+  badge.className = 'progress-badge';
+  if (data.status === 'running') { badge.classList.add('badge-running'); badge.textContent = `In corso (${data.completed_steps}/${data.total_steps})`; }
+  else if (data.status === 'done') { badge.classList.add('badge-done'); badge.textContent = 'Completato'; }
+  else if (data.status === 'error') { badge.classList.add('badge-error'); badge.textContent = 'Errore'; }
+  else if (data.status === 'stopped') { badge.classList.add('badge-stopped'); badge.textContent = `In pausa (${data.completed_steps}/${data.total_steps})`; }
+  else { badge.classList.add('badge-queued'); badge.textContent = 'In coda'; }
+
+  const controls = document.getElementById('job-controls');
+  const stopBtn = document.getElementById('stop-btn');
+  const resumeBtn = document.getElementById('resume-btn');
+  if (data.status === 'running') {
+    controls.classList.remove('hidden');
+    stopBtn.classList.remove('hidden');
+    resumeBtn.classList.add('hidden');
+  } else if (data.status === 'stopped' || data.status === 'error') {
+    controls.classList.remove('hidden');
+    stopBtn.classList.add('hidden');
+    resumeBtn.classList.remove('hidden');
+  } else {
+    controls.classList.add('hidden');
+  }
+
+  const list = document.getElementById('steps-list');
+  list.innerHTML = data.steps.map((s, i) => {
+    const cls = `step step-${s.status}`;
+    let icon = '';
+    if (s.status === 'done') icon = '&#10003;';
+    else if (s.status === 'running') icon = '&#9679;';
+    else icon = String(i + 1);
+    return `<li class="${cls}"><span class="step-num">${i + 1}.</span><span class="step-icon">${icon}</span><span class="step-name">${s.name}</span></li>`;
+  }).join('');
+
+  if (data.status === 'done') {
+    clearInterval(pollTimer);
+    clearInterval(logTimer);
+    pollLogs();
+    document.getElementById('done-area').classList.remove('hidden');
+  }
+  if (data.status === 'error') {
+    clearInterval(pollTimer);
+    clearInterval(logTimer);
+    pollLogs();
+    document.getElementById('error-area').classList.remove('hidden');
+    document.getElementById('error-text').textContent = data.error || 'Errore sconosciuto';
+  }
+  if (data.status === 'stopped') {
+    clearInterval(pollTimer);
+    clearInterval(logTimer);
+    pollLogs();
+  }
+}
+
+// Stop job
+document.getElementById('stop-btn').addEventListener('click', async () => {
+  if (!currentJobId) return;
+  const btn = document.getElementById('stop-btn');
+  btn.disabled = true;
+  btn.textContent = 'Fermando...';
+  try {
+    await fetch(`${API}/api/jobs/${currentJobId}/stop`, { method: 'POST' });
+    pollStatus();
+  } catch (err) { console.error(err); }
+  btn.disabled = false;
+  btn.textContent = 'Ferma Job';
+});
+
+// Resume job
+document.getElementById('resume-btn').addEventListener('click', async () => {
+  if (!currentJobId) return;
+  const btn = document.getElementById('resume-btn');
+  btn.disabled = true;
+  btn.textContent = 'Riprendendo...';
+  try {
+    await fetch(`${API}/api/jobs/${currentJobId}/resume`, { method: 'POST' });
+    pollStatus();
+    pollLogs();
+    pollTimer = setInterval(pollStatus, 5000);
+    logTimer = setInterval(pollLogs, 3000);
+  } catch (err) { console.error(err); }
+  btn.disabled = false;
+  btn.textContent = 'Riprendi Job';
+});
+
+// Log polling
+async function pollLogs() {
+  if (!currentJobId) return;
+  try {
+    const res = await fetch(`${API}/api/jobs/${currentJobId}/logs?offset=${logOffset}`);
+    const data = await res.json();
+    if (data.content) {
+      const el = document.getElementById('console-body');
+      const colored = data.content
+        .replace(/^(={2,}.*$)/gm, '<span class="log-session">$1</span>')
+        .replace(/^(  SESSION .*$)/gm, '<span class="log-session">$1</span>')
+        .replace(/(\[Tool: [^\]]+\])/g, '<span class="log-tool">$1</span>')
+        .replace(/(\[Error\].*$)/gm, '<span class="log-error">$1</span>')
+        .replace(/(\[BLOCKED\].*$)/gm, '<span class="log-error">$1</span>')
+        .replace(/(\[Done\])/g, '<span class="log-done">$1</span>');
+      el.innerHTML += colored;
+      el.scrollTop = el.scrollHeight;
+      logOffset = data.offset;
+    }
+  } catch (err) {
+    console.error('Log poll error:', err);
+  }
+}
+
+// Download
+document.getElementById('download-btn').addEventListener('click', () => {
+  window.location.href = `${API}/api/jobs/${currentJobId}/download`;
+});
+
+// Back
+document.getElementById('back-btn').addEventListener('click', () => {
+  clearInterval(pollTimer);
+  clearInterval(logTimer);
+  logOffset = 0;
+  currentJobId = null;
+  document.getElementById('view-progress').classList.add('hidden');
+  document.getElementById('view-form').classList.remove('hidden');
+  loadJobs();
+});
+
+// Load existing jobs
+async function loadJobs() {
+  try {
+    const res = await fetch(`${API}/api/jobs`);
+    const jobs = await res.json();
+    const container = document.getElementById('jobs-list');
+    if (!jobs.length) { container.innerHTML = '<p style="color:var(--text-dim);font-size:0.85rem">Nessun job ancora.</p>'; return; }
+    container.innerHTML = jobs.map(j => `
+      <div class="job-card">
+        <div style="flex:1;cursor:pointer" onclick="showProgress('${j.job_id}')">
+          <div class="job-name">${j.client_name}</div>
+          <div class="job-meta">${new Date(j.created_at).toLocaleString('it-IT')} &middot; ${j.progress} steps</div>
+        </div>
+        <span class="progress-badge badge-${j.status}" style="margin-right:8px">${j.status}</span>
+        <button class="btn-delete" onclick="event.stopPropagation(); deleteJob('${j.job_id}', '${j.client_name}')">Elimina</button>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error('Load jobs error:', err);
+  }
+}
+
+async function deleteJob(jobId, clientName) {
+  if (!confirm(`Eliminare il job "${clientName}"?`)) return;
+  if (!confirm(`Sei sicuro? Tutti i file generati verranno eliminati permanentemente.`)) return;
+  try {
+    await fetch(`${API}/api/jobs/${jobId}`, { method: 'DELETE' });
+    loadJobs();
+  } catch (err) {
+    alert('Errore eliminazione: ' + err.message);
+  }
+}
+
+loadJobs();
+</script>
+</body>
+</html>

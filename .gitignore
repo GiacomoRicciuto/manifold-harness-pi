@@ -1,0 +1,6 @@
+node_modules/
+generations/
+jobs.json
+jobs.json.lock
+.tmp_uploads/
+*.log

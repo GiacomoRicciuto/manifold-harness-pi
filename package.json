@@ -1,0 +1,22 @@
+{
+  "name": "manifold-harness-pi",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AI Manifold Brief Generator — powered by pi-coding-agent",
+  "bin": {
+    "manifold": "./src/cli.mjs"
+  },
+  "scripts": {
+    "start": "node api/server.mjs",
+    "cli": "node src/cli.mjs",
+    "dry-run": "node src/cli.mjs --client TestDry --product-info 'Test product' --max-iterations 1"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "multer": "^1.4.5-lts.1",
+    "archiver": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

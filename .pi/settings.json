@@ -1,0 +1,17 @@
+{
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-opus-4-5",
+  "defaultThinkingLevel": "high",
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 8192,
+    "keepRecentTokens": 32000
+  },
+  "retry": {
+    "enabled": true,
+    "maxRetries": 3,
+    "baseDelayMs": 2000,
+    "maxDelayMs": 30000
+  },
+  "quietStartup": true
+}

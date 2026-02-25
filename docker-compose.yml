@@ -1,0 +1,11 @@
+services:
+  manifold:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - ANTHROPIC_API_KEY
+      - PORT=8000
+    volumes:
+      - ./generations:/app/generations
+    restart: unless-stopped
