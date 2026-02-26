@@ -214,7 +214,7 @@ app.get("/api/jobs/:id/download", (req, res) => {
   archive.pipe(res);
 
   // Main files
-  for (const fname of ["avatar_manifold.txt", "market_spec.txt"]) {
+  for (const fname of ["avatar_manifold.txt", "market_spec.txt", "avatar_manifold_professional.pdf"]) {
     const fpath = join(projectDir, fname);
     if (existsSync(fpath)) archive.file(fpath, { name: fname });
   }
