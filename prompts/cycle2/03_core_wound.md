@@ -1,77 +1,37 @@
-# CAPITOLO 03 — Core Wound
-
-Sei un analista di marketing di livello mondiale specializzato in psicologia profonda del consumatore. Il tuo compito e' identificare la CORE WOUND — la ferita piu' profonda, la paura primordiale di annientamento totale, abbandono e morte — che il mercato target proietta sul problema.
-
-Prima di iniziare, leggi il Market Spec, il Buyer Base e la Pain Matrix.
-
-Usa WebSearch per cercare ricerche psicologiche, articoli e dati che supportino la tua analisi.
-
----
-
-## Teoria della Core Wound
-
-Ogni mercato rifrange la paura fondamentale dell'essere umano (annientamento, abbandono, morte) attraverso un prisma specifico. La Core Wound non e' il dolore superficiale — e' la paura SOTTO il dolore, quella che non ammetterebbero mai.
-
-Le persone costruiscono la propria identita' e sicurezza psicologica attraverso **Risorse Ontologiche** — le cose che usano per sentirsi al sicuro nel mondo. Quando queste risorse sono minacciate, il dolore e' esistenziale.
-
----
-
-## Le 12 Risorse Ontologiche
-
-Per ciascuna, analizza il mercato target:
-
-1. **Aspetto fisico e attrattivita'** — Quanto il mercato dipende dall'aspetto per sentirsi al sicuro/degno?
-2. **Ricchezza finanziaria e possedimenti materiali** — Quanto l'identita' e' legata al denaro?
-3. **Status sociale e influenza** — Quanto conta essere rispettati/ammirati?
-4. **Titoli professionali e achievements** — Quanto si definiscono per cio' che fanno?
-5. **Fama e riconoscimento** — Quanto e' importante essere conosciuti/visti?
-6. **Giovinezza e vitalita'** — Quanto temono l'invecchiamento/declino?
-7. **Relazioni e dipendenze emotive** — Quanto dipendono dagli altri per sentirsi interi?
-8. **Capacita' intellettuale e conoscenza** — Quanto l'identita' e' legata all'essere "smart"?
-9. **Validazione culturale/sociale** — Quanto hanno bisogno di appartenere al gruppo?
-10. **Piaceri sensoriali e indulgenze** — Quanto usano il piacere come rifugio?
-11. **Indipendenza** — Quanto conta non dipendere da nessuno?
-12. **Potere e controllo sugli altri** — Quanto l'identita' e' legata al controllo?
-
-Per ogni risorsa, il dolore si manifesta in due stati:
-- **Desire to Have**: mancanza di una risorsa che si desidera
-- **Fear of Loss**: terrore di perdere una risorsa che si possiede
-
----
-
-## Output Richiesto
-
-### MATRICE DELLE RISORSE ONTOLOGICHE
-
-| # | Risorsa Ontologica | Earned/Inherent | Intensita' (1-10) | Fear of Loss / Desire to Have | Descrizione Specifica |
-|---|--------------------|-----------------|--------------------|-------------------------------|----------------------|
-| 1 | Aspetto fisico | ... | ... | ... | ... |
-| ... | ... | ... | ... | ... | ... |
-| 12 | Potere e controllo | ... | ... | ... | ... |
-
-### PREDIZIONE DELLA CORE WOUND
-
-Basandoti sulla matrice, identifica la Core Wound del mercato.
-
-Formato: **"Sentirsi [stato emotivo specifico]"**
-
-Esempi noti:
-- Mercato Sopravvivenza: "Sentirsi un fallimento come padre/protettore"
-- Mercato Skincare Donna: "Sentirsi completamente invisibile"
-- Mercato Dating Uomini: "Sentirsi un totale emarginato"
-- Mercato Testosterone: "Sentirsi rimpiazzato dalla generazione piu' giovane"
-- Mercato Dolore Articolare: "Sentirsi un peso per gli altri"
-- Mercato Sbiancamento Denti: "Paura di essere percepito come poco attraente/poco igienico"
-- Mercato Memoria: "Paura del declino cognitivo, diventare un peso"
-
-### ANALISI APPROFONDITA
-
-Scrivi un'analisi dettagliata che:
-1. **Cita direttamente** dal Market Spec e dai capitoli precedenti per supportare ogni affermazione
-2. Descrive il MESSAGING e le IMMAGINI che stimolano il desiderio di guadagnare le risorse ontologiche valorizzate dal mercato
-3. Descrive come "strofinare sale nella ferita" delle risorse che temono di perdere — con esempi vividi, concreti, emotivi
-4. Collega la Core Wound ai pain points della Pain Matrix
-5. Spiega come la Core Wound si manifesta nella vita quotidiana del prospect
-
-### CONTRADDIZIONE DI QUESTO CAPITOLO
-La Core Wound rivela spesso una contraddizione profonda: cosa il mercato usa per proteggersi e' spesso la stessa cosa che li tiene intrappolati. Identifica questa dinamica.
+﻿Oggi vorrei il tuo aiuto per analizzare un mercato per scoprire quello che viene chiamato la "Ferita Primaria."
+La "FERITA PRIMARIA" è in definitiva la paura dell'annientamento totale, dell'abbandono completo e della morte. È la peggiore paura dell'essere umano che si realizza.
+Puoi immaginarla come una luce accecante di PAURA.
+Ora, ogni mercato riflette questa "FERITA PRIMARIA" in modo diverso.
+Questo perché ogni singolo mercato (e persona) possiede diverse "Risorse Ontologiche" che utilizzano per sentirsi al sicuro.
+Queste sono quelle "Risorse Ontologiche":
+1. Aspetto fisico e attrattività
+2. Ricchezza finanziaria e possedimenti materiali
+3. Status sociale e influenza
+4. Titoli professionali e risultati raggiunti
+5. Fama e celebrità
+6. Giovinezza e vitalità
+7. Relazioni e dipendenze emotive
+8. Prowess intellettuale e acquisizione di conoscenza
+9. Validazione culturale o sociale
+10. Piaceri sensoriali e indulgenze
+11. Indipendenza
+12. Potere e controllo sugli altri
+A seconda della nostra posizione unica nella vita: sesso, età, talento, educazione, posizione sociale, ambiente, ecc...
+Costruiamo queste Risorse Ontologiche in modo diverso per proteggerci contro questo senso di PERDIZIONE (cioè la "Ferita Primaria").
+Per esempio, qualcuno che si sente valorizzato per il proprio aspetto, potrebbe sperimentare la "ferita primaria" come una perdita di attrattività.
+Mentre qualcuno che sente di soffrire perché non ha soldi, sta sperimentando la "ferita primaria" come il desiderio di ottenere questi soldi.
+Come puoi vedere, sperimentiamo dolore quando queste Risorse Ontologiche esistono in due stati:
+Desiderio di Avere Paura di Perdere
+Sono queste dinamiche diverse che creano l'espressione unica di dolore che il nostro mercato sperimenta.
+Ecco alcuni esempi noti della "Ferita Primaria" in diversi mercati:
+PER ESEMPIO —
+Sentirsi Come un Fallito come Guardiano/Padre (Mercato della Sopravvivenza) Sentirsi Completamente Invisibile (Mercato Skincare per Donne) Sentirsi Come un Totale Emarginato (Mercato Dating per Uomini) Sentirsi Sostituito Dalla Generazione Più Giovane (Mercato Testosterone per Uomini Anziani)
+Inoltre, queste ferite primarie possono essere organizzate come:
+Innate → Guadagnate/Ottenute →
+Ora, potresti per favore analizzare il mio mercato creando una matrice con le risorse ontologiche, se è percepita come guadagnata o innata, un punteggio da 1-10 per la sua intensità, se è sperimentata come paura di perdere/desiderio di ottenere e una breve descrizione.
+Poi faremo una previsione sulla ferita primaria, come nel seguente esempio:
+Sentirsi come un fallito come uomo e protettore (Mercato della Sopravvivenza) Nel mercato dello skincare per donne che invecchiano, c'era questo tema che continuava a emergere ancora e ancora – "paura di essere invisibile." Era così comune, che aveva molto senso. Nel mercato del Testosterone per uomini si tratta di essere SOSTITUITI, specificamente da uomini più giovani e virili. Ma si tratta di essere sostituiti. Nel mercato delle articolazioni, si tratta di essere messi da parte nella vita. Un peso per gli altri. Non più in grado di essere un partecipante perché il tuo corpo ti ha "tradito". Mercato dello sbiancamento denti: La paura di essere percepito come non attraente, poco igienico, o di basso status a causa dei denti scoloriti. Mercato del miglioramento della memoria: La paura del declino cognitivo, perdere le proprie facoltà mentali, e diventare un peso per gli altri. Perdita completa del sé.
+Per favore fai questo per il mercato con cui abbiamo lavorato sopra, e/o basandoti sui documenti allegati. Nel tuo riassunto/previsione, per favore cita "direttamente" dal documento sorgente per spiegare il tuo ragionamento.
+In questo riassunto, per favore indica che tipo di messaggi/immagini stimoleranno il desiderio di ottenere risorse ontologiche specifiche e "getteranno sale sulla ferita" delle risorse che hanno paura di perdere. Dipingi un'immagine del futuro in entrambi gli esempi. Per favore sii vivido, concreto ed emotivo in quelle descrizioni.
+LINEE GUIDA:
+Queste risorse ontologiche devono essere direttamente collegate al punto dolente del mercato. Per favore formatta questo effettivamente come una griglia/matrice

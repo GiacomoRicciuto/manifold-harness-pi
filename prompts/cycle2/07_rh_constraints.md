@@ -1,98 +1,117 @@
-# CAPITOLO 07 — Resonance Hierarchy Constraints
+﻿Perfetto, ora vorrei parlare dei "Vincoli".
 
-Sei un analista di marketing di livello mondiale. Il tuo compito e' identificare TUTTI i vincoli percepiti ad ogni livello della Resonance Hierarchy — le limitazioni che impediscono al prospect di diventare acquirente e risolvere il problema.
 
-Prima di iniziare, leggi il Market Spec e tutti i capitoli precedenti, specialmente la Resonance Hierarchy (Capitolo 06).
+A ogni singolo livello di questa "Gerarchia di Risonanza" esiste una serie di vincoli che possono impedire ai prospect di diventare acquirenti.
 
-Usa WebSearch per cercare le obiezioni e resistenze reali espresse dal mercato online.
 
----
+VINCOLI DI IDENTITÀ → 
+VINCOLI DI VALORI →
+VINCOLI DI CREDENZE →
+VINCOLI ESPERIENZIALI (RICORDI) → 
+VINCOLI DI RISORSE (NON POSSO FARE X, PERCHÉ MI MANCA Y)  →
 
-## I 5 Livelli di Vincoli
 
-### 1. IDENTITY CONSTRAINTS
-Chi il prospect VEDE se stesso essere. Se l'identita' cristallizzata e' in conflitto con la promessa, serve finezza.
+Questi "Vincoli" sono limitazioni percepite che i nostri prospect sentono li IMPEDIRANNO di risolvere il problema/ottenere il risultato desiderato.
 
-Es (mercato eye bags):
-- "Sono destinata ad avere le borse, e' di famiglia."
-- "Sono troppo vecchia per preoccuparmi dell'aspetto."
-- "Non sono il tipo da routine di bellezza."
 
-**Domanda chiave**: Se il prospect accettasse la promessa, dovrebbe CAMBIARE chi crede di essere? Se si', questo e' un vincolo identitario.
+Che questi Vincoli siano "reali" o meno è irrilevante. Questi Vincoli sono al 100% reali nella mente dei nostri prospect. Quindi, se vogliamo aiutare a guidare i nostri prospect verso una decisione/azione che li aiuterà a risolvere il loro problema, DOBBIAMO essere in grado di riconoscere/identificare/affrontare i Vincoli da cui stanno operando.
 
-### 2. VALUES CONSTRAINTS (due componenti)
 
-**2a. Conflitto con valori personali:**
-Il prospect non agira' su cose che confliggono con i propri valori.
-Es: un vegano non comprera' MAI un piano di perdita peso basato sulla carne, non importa quanto efficace.
+Perché se non riusciamo ad affrontare questi Vincoli, i nostri prospect non riusciranno a immaginare/accettare quello che è realmente possibile per loro.
 
-**2b. Il prodotto offre cio' che valorizzano?**
-Se il prospect e' un umile padre di famiglia, non comprera' un corso che promette "vita da Lamborghini."
-Il prodotto deve parlare alla valuta che conta per LORO.
 
-### 3. BELIEF CONSTRAINTS
+Ecco un po' di contesto sui vari Vincoli.
 
-**3a. Internal Beliefs** (su se stessi):
-- "Ho provato tutto, niente funziona per me"
-- "Non ho la disciplina per seguire un programma"
-- "Sono fatto cosi', non posso cambiare"
 
-**3b. External Beliefs** (su soluzioni/mercato/problema):
-- "Tutte le soluzioni per X sono truffe"
-- "Serve un intervento chirurgico per risolvere X"
-- "I medici non capiscono veramente questo problema"
+VINCOLI di IDENTITÀ: Come si vedono i nostri prospect? E di cosa si vedono CAPACI? Perché se sono arrivati a una visione cristallizzata di chi sono (e quella visione è in CONFLITTO con quello che stai promettendo), ci vorrà finezza per fargli cambiare idea/fargli considerare la possibilità.
 
-### 4. RESOURCE CONSTRAINTS
-Cio' che il prospect sente di NON AVERE ma che serve per risolvere il problema:
-- **Tempo**: "Non ho tempo per..."
-- **Energia**: "Sono troppo stanco per..."
-- **Denaro**: "Non posso permettermi..."
-- **Esperienza/Skill**: "Non so come..."
-- **Accesso**: "Non ho accesso a..."
-- **Costanza**: "Non riesco a essere costante con..."
 
-### 5. EXPERIENTIAL CONSTRAINTS
-Come le esperienze passate e i ricordi RESTRINGONO la capacita' del prospect di immaginare un futuro in cui il problema e' risolto.
+VINCOLI di VALORI: Ci sono DUE componenti che rientrano nei vincoli di valore. Ti darò una breve sintesi di entrambi.
 
-Es: "I clienti mi ghostano sempre" → non riesce a immaginare clienti che restano
-Es: "Ogni dieta che ho provato e' fallita" → non riesce a credere che qualcosa funzioni
 
----
+1) I prospect non agiranno su cose che sono in conflitto con i loro valori personali. Questi sono gli standard/principi secondo cui vivono. 
 
-## Output Richiesto
 
-Per OGNI livello di vincolo, elenca i vincoli piu' importanti e probabili per il mercato target. Per ciascuno:
+Per esempio, non riuscirai a convincere una lista di vegani sovrappeso a comprare un piano per perdere peso basato sul mangiare carne. Non importa quante "prove" hai della sua efficacia.
 
-1. Il vincolo espresso con le parole del prospect (tra virgolette)
-2. La categoria (Identity/Values/Belief-Internal/Belief-External/Resource/Experiential)
-3. L'intensita' (1-10): quanto e' radicato questo vincolo
-4. La conseguenza: cosa impedisce concretamente al prospect di fare
 
-### FORMAT
+2) Cosa APPREZZANO davvero i nostri prospect? E il TUO prodotto offre il risultato che vogliono DAVVERO? Se qualcuno si vanta di essere un uomo di famiglia umile/discreto, avrai difficoltà a vendergli qualche corso di business opportunity che gli mostra come acquisire Lamborghini/vivere uno stile di vita sfarzoso da festa.
 
-```
-## IDENTITY CONSTRAINTS
-1. "[frase del prospect]" — Intensita': X/10
-   Conseguenza: [cosa impedisce]
 
-## VALUES CONSTRAINTS
-...
+VINCOLI di CREDENZE: Quali sono le CREDENZE limitate dei nostri Prospect legate alla loro incapacità di risolvere il problema? Queste includono sia INTERNE (credenze su se stessi) che ESTERNE (credenze su soluzioni/mercato/problema nel complesso).
 
-## BELIEF CONSTRAINTS — INTERNAL
-...
 
-## BELIEF CONSTRAINTS — EXTERNAL
-...
+VINCOLI di RISORSE: Cosa sente di NON AVERE il nostro prospect (che pensa sia necessario per risolvere il problema)? Può essere fisico, basato su tratti caratteriali, competenze, o relativo a risorse come tempo, energia, denaro, o esperienza/reputazione.
 
-## RESOURCE CONSTRAINTS
-...
 
-## EXPERIENTIAL CONSTRAINTS
-...
-```
+VINCOLI ESPERIENZIALI: Come hanno LIMITATO le esperienze PASSATE dei nostri prospect ("ricordi") la loro capacità di immaginare un futuro in cui hanno risolto il problema? (Es: "I clienti mi mollano sempre", "Sgarro sempre dalla dieta")
 
-### MAPPA DEI VINCOLI CRITICI
-Identifica i 5 vincoli PIU' POTENTI trasversalmente a tutte le categorie. Questi sono quelli che il copy DEVE dissolvere per far funzionare la vendita.
 
-### CONTRADDIZIONE DI QUESTO CAPITOLO
-Dove i vincoli del prospect sono auto-imposti ma creduti esterni? Dove il prospect si auto-sabota credendo di essere vittima?
+###
+
+
+Ecco un esempio di come potrebbero apparire questi Vincoli nel mercato della cura della pelle (per donne che vogliono eliminare le borse sotto gli occhi)
+
+
+Vincoli di Identità:
+
+
+"Sono destinata ad avere le borse sotto gli occhi, è di famiglia."
+"Ho sempre avuto le borse sotto gli occhi, fa parte di chi sono."
+"Sono troppo vecchia per eliminare le borse sotto gli occhi ora."
+"Non mi importa abbastanza del mio aspetto per preoccuparmi delle borse sotto gli occhi."
+"Preoccuparsi delle borse sotto gli occhi è solo vanità."
+
+
+Vincoli di Valori:
+
+
+"È sbagliato concentrarsi così tanto sull'aspetto."
+"Dovremmo invecchiare con grazia, non combatterlo."
+"Dovrei spendere i miei soldi per cose più importanti."
+"Non è giusto fare interventi estetici."
+"Non voglio sembrare egocentrica o superficiale."
+
+
+Vincoli di Credenze (Interni):
+
+
+"Ho provato di tutto, niente funzionerà per le mie borse sotto gli occhi."
+"Non ho tempo per fare un sacco di trattamenti speciali."
+"Non riuscirei mai a mantenere una routine di bellezza complicata."
+"Se sembra troppo bello per essere vero, probabilmente lo è."
+"Le mie borse sotto gli occhi sono così brutte, sono oltre ogni aiuto."
+"Non sono brava a mantenere nuove abitudini."
+"Non saprei nemmeno da dove iniziare."
+
+
+Vincoli di Credenze (Esterni):
+
+
+"Tutte le soluzioni per le borse sotto gli occhi là fuori sono truffe."
+"L'industria della bellezza vuole solo prendersi i miei soldi."
+"I prodotti e trattamenti per le borse sotto gli occhi sono troppo costosi."
+"Serve la chirurgia per eliminare davvero le borse sotto gli occhi."
+"I rimedi per le borse sotto gli occhi sono dolorosi o hanno effetti collaterali."
+"I trattamenti per le borse sotto gli occhi sono troppo rischiosi, potrebbe andare storto qualcosa."
+"Queste soluzioni potrebbero funzionare per altre persone, ma non per me."
+"Se dieta e sonno non hanno risolto le mie borse sotto gli occhi, niente lo farà."
+
+
+Vincoli di Risorse:
+
+
+Non avere i soldi da spendere per trattamenti delle borse sotto gli occhi
+Non avere il tempo da dedicare a una routine di bellezza
+Mancanza di conoscenza sulle migliori soluzioni per le borse sotto gli occhi
+Non avere accesso a professionisti come dermatologi
+Mancanza di costanza per mantenere una nuova abitudine o regime
+
+
+###
+
+
+Ora, potresti fornire per favore una panoramica completa dei Vincoli della Gerarchia di Risonanza per il mercato con cui abbiamo lavorato (o documenti allegati)?
+
+
+Voglio che identifichi TUTTI i Vincoli più importanti e più probabili nel mio mercato. Perché identificare i Vincoli importanti è cruciale per responsabilizzare i nostri prospect.

@@ -12,7 +12,7 @@ import { spawn } from "node:child_process";
 import { createInterface } from "node:readline";
 import { join, resolve } from "node:path";
 import { existsSync, writeFileSync, mkdirSync, unlinkSync, cpSync, appendFileSync } from "node:fs";
-import { PI_TOOLS, PI_THINKING_LEVEL, SESSION_TIMEOUT } from "./config.mjs";
+import { PI_TOOLS, PI_THINKING_LEVEL, SESSION_TIMEOUT_C1, SESSION_TIMEOUT_C2 } from "./config.mjs";
 
 // ---------------------------------------------------------------------------
 // System Prompt — identical across all 20 sessions
@@ -32,12 +32,29 @@ PRINCIPI DI ANALISI:
    Segui la catena fino alla radice.
 
 HAI ACCESSO A:
-- bash per eseguire comandi (curl per web, grep per cercare, etc.)
+- bash per eseguire comandi (web search, grep, etc.)
 - read/write/edit per gestire i file del progetto
 - grep/find/ls per esplorare file e contenuti
 
+RICERCA WEB — REGOLE FONDAMENTALI:
+METODO PREFERITO (estrae SOLO testo pulito, niente HTML/CSS/JS):
+1. Per cercare sul web: python3 /app/scripts/web_text.py --search "query terms"
+2. Per leggere una pagina: python3 /app/scripts/web_text.py "URL"
+3. Per limitare output: python3 /app/scripts/web_text.py "URL" --max-lines 100
+
+METODO ALTERNATIVO (se python3 non disponibile):
+1. Per leggere pagine web: curl -sL "URL" -H "User-Agent: Mozilla/5.0" | lynx -stdin -dump -nolist | head -200
+2. Per cercare: curl -sL "https://html.duckduckgo.com/html/?q=query" -H "User-Agent: Mozilla/5.0" | lynx -stdin -dump -nolist | head -80
+
+3. Per API JSON (Reddit .json): curl diretto OK.
+
+DIVIETI ASSOLUTI:
+- NON usare google.com/search (captcha) né youtube.com/results (richiede JS).
+- NON usare MAI curl da solo su HTML — spreca token con HTML/CSS/JS inutile.
+- Se un comando restituisce HTML grezzo, FERMATI e usa python3 web_text.py invece.
+
 DEVI SEMPRE:
-- Leggere il contesto fornito nel prompt (market_spec, manifold precedente, dati input)
+- Leggere il contesto fornito nel prompt (market_spec, capitoli precedenti, dati input)
 - Fare ricerca autonoma per validare e arricchire ogni analisi
 - Scrivere output nei file indicati dal prompt
 - Essere specifico, empirico, mai generico
@@ -59,6 +76,7 @@ export async function runPiSession({
   projectDir,
   model,
   provider,
+  cycle = 1,
 }) {
   const absDir = resolve(projectDir);
 
@@ -214,11 +232,12 @@ export async function runPiSession({
       process.stderr.write(text);
     });
 
-    // Timeout safety
+    // Timeout safety — Cycle 2 gets more time (heavy research + large writes)
+    const sessionTimeout = cycle === 2 ? SESSION_TIMEOUT_C2 : SESSION_TIMEOUT_C1;
     const timeout = setTimeout(() => {
-      console.error(`\n  [TIMEOUT] Session exceeded ${SESSION_TIMEOUT / 1000}s — killing`);
+      console.error(`\n  [TIMEOUT] Session exceeded ${sessionTimeout / 1000}s — killing`);
       proc.kill("SIGTERM");
-    }, SESSION_TIMEOUT);
+    }, sessionTimeout);
 
     proc.on("close", (code) => {
       clearTimeout(timeout);

@@ -1,5 +1,14 @@
 FROM node:20-slim
 
+# Install system tools: curl + lynx for web search, python3 for PDF generation
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    lynx \
+    python3 \
+    python3-pip \
+    python3-venv \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install pi-coding-agent globally
 RUN npm install -g @mariozechner/pi-coding-agent
 

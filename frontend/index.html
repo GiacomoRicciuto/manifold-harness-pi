@@ -360,6 +360,8 @@ async function pollLogs() {
     const data = await res.json();
     if (data.content) {
       const el = document.getElementById('console-body');
+      // Only auto-scroll if user is already near the bottom (within 80px)
+      const wasNearBottom = (el.scrollHeight - el.scrollTop - el.clientHeight) < 80;
       const colored = data.content
         .replace(/^(={2,}.*$)/gm, '<span class="log-session">$1</span>')
         .replace(/^(  SESSION .*$)/gm, '<span class="log-session">$1</span>')
@@ -368,7 +370,7 @@ async function pollLogs() {
         .replace(/(\[BLOCKED\].*$)/gm, '<span class="log-error">$1</span>')
         .replace(/(\[Done\])/g, '<span class="log-done">$1</span>');
       el.innerHTML += colored;
-      el.scrollTop = el.scrollHeight;
+      if (wasNearBottom) el.scrollTop = el.scrollHeight;
       logOffset = data.offset;
     }
   } catch (err) {

@@ -31,18 +31,22 @@ Per questa analisi DEVI:
 
 COME FARE RICERCA WEB — SEGUI QUESTE ISTRUZIONI ESATTAMENTE:
 
-REGOLA #1: Per leggere QUALSIASI pagina web, usa SEMPRE lynx:
+METODO PREFERITO (estrae SOLO testo pulito, ZERO HTML/CSS/JS):
+  python3 /app/scripts/web_text.py --search "query terms"     # Cerca su DuckDuckGo
+  python3 /app/scripts/web_text.py "URL"                       # Leggi una pagina
+  python3 /app/scripts/web_text.py "URL" --max-lines 100      # Limita output
+
+METODO ALTERNATIVO (se python3 non disponibile):
   curl -sL "URL" -H "User-Agent: Mozilla/5.0" | lynx -stdin -dump -nolist | head -200
-NON usare MAI curl da solo su HTML — spreca token con HTML/CSS/JS inutile.
+  curl -sL "https://html.duckduckgo.com/html/?q=query" -H "User-Agent: Mozilla/5.0" | lynx -stdin -dump -nolist | head -80
 
-REGOLA #2: Per cercare sul web, usa DuckDuckGo HTML (Google/YouTube BLOCCANO curl):
-  curl -sL "https://html.duckduckgo.com/html/?q=query+terms" -H "User-Agent: Mozilla/5.0" | lynx -stdin -dump -nolist | head -80
-
-REGOLA #3: Per API JSON (es. Reddit), curl diretto va bene:
+Per API JSON (es. Reddit): curl diretto OK.
   curl -s "https://www.reddit.com/r/sub/search.json?q=query&limit=20" -H "User-Agent: Mozilla/5.0"
 
-NON usare google.com/search (ritorna captcha). NON usare youtube.com/results (richiede JS).
-Usa SEMPRE html.duckduckgo.com per le ricerche e lynx per leggere le pagine trovate.
+DIVIETI ASSOLUTI:
+- NON usare google.com/search (captcha). NON usare youtube.com/results (richiede JS).
+- NON usare MAI curl da solo su HTML — spreca token. Usa SEMPRE web_text.py o lynx.
+- Se ricevi HTML grezzo, FERMATI e usa python3 /app/scripts/web_text.py.
 
 PENSIERO CRITICO:
 - Identifica la contraddizione principale di questa analisi: cosa il mercato

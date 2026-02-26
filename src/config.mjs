@@ -6,10 +6,10 @@
  */
 
 // ---------------------------------------------------------------------------
-// Models — Pi supports multi-provider. Default to Anthropic Claude Opus.
+// Models — Pi supports multi-provider. Default to Anthropic Claude Sonnet.
 // Override with --model flag (e.g., "openai/gpt-4o", "anthropic/claude-opus-4-5")
 // ---------------------------------------------------------------------------
-export const DEFAULT_MODEL = "claude-opus-4-6";
+export const DEFAULT_MODEL = "claude-sonnet-4-6";
 export const DEFAULT_PROVIDER = "anthropic";
 
 // ---------------------------------------------------------------------------
