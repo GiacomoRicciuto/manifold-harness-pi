@@ -1,0 +1,28 @@
+{
+  "client_name": "Mercato dei videogiochi vecchi giochi",
+  "product_info": "Mercato dei vecchi videogiochi - collezionismo, compravendita, investimento",
+  "current_step_index": 21,
+  "completed_steps": [
+    "swipe_analysis",
+    "scrape_research",
+    "source_extraction",
+    "survey_processing",
+    "market_spec_generation",
+    "01_buyer_base",
+    "02_pain_matrix",
+    "03_core_wound",
+    "04_benefit_matrix",
+    "05_desire_daisy_chain",
+    "06_resonance_hierarchy",
+    "07_rh_constraints",
+    "08_dissolution_frameworks",
+    "09_epiphany_threshold",
+    "10_maze_theory_hooks",
+    "11_story_prompts",
+    "12_interoceptive_mechanisms",
+    "13_language_patterns",
+    "14_ccc",
+    "15_ejection_triggers",
+    "pdf_generation"
+  ]
+}

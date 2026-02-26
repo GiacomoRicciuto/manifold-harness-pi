@@ -26,4 +26,4 @@ RUN mkdir -p /app/generations
 
 EXPOSE 8000
 
-CMD ["node", "api/server.mjs"]
+CMD ["node", "api/startup.mjs"]

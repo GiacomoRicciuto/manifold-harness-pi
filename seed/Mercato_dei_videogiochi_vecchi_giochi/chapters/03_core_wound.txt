@@ -1,0 +1,816 @@
+═══════════════════════════════════════════════════════════════════════════════
+CAPITOLO 03 — CORE WOUND / FERITA PRIMARIA
+LA FERITA ONTOLOGICA: IL MERCATO DEI VIDEOGIOCHI VINTAGE IN ITALIA
+L'annientamento psicologico alla radice di ogni decisione di acquisto, vendita
+e collezionismo
+═══════════════════════════════════════════════════════════════════════════════
+Basato su: market_spec.txt + chapters/01_buyer_base.txt + chapters/02_pain_matrix.txt
++ ricerca autonoma (26 Febbraio 2026)
+Fonti: Reddit r/gamecollecting, r/Flipping, r/retrogaming, r/italy, r/sfoghi,
+Forum IGN Italia, IoVideogioco.com, Heineman (gamescriticism.org, 2023),
+Mora-Cantallops et al. (Entertainment Computing, 2021), Casey (2000),
+Clara Davis (Alibaba Product Insights, Feb 2026), Mark Baxman (RetroTechLab, 2025)
+═══════════════════════════════════════════════════════════════════════════════
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PARTE I — LA MATRICE DELLE RISORSE ONTOLOGICHE
+Come il mercato dei videogiochi vintage attiva, minaccia e protegge le risorse
+fondamentali di sopravvivenza psicologica del collezionista
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NOTA METODOLOGICA
+Le Risorse Ontologiche elencate sono valutate su una scala 1-10 di intensità
+(quanto quella risorsa è ATTIVATA in questo specifico mercato), classificate
+come INNATE (parte dell'identità di base, non costruita) o GUADAGNATE/OTTENUTE
+(costruite attraverso sforzo, esperienza, investimento), e descritte sia nella
+loro dimensione di "PAURA DI PERDERE" che di "DESIDERIO DI OTTENERE".
+
+Solo le risorse concretamente attivate da questo mercato specifico sono incluse.
+Quelle con intensità marginale (<3) sono omesse per non disperdere il focus.
+
+
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                              MATRICE DELLE RISORSE ONTOLOGICHE                                                           │
+│                     Mercato Videogiochi Vintage — Piccolo Venditore Italiano su Vinted/eBay                              │
+├────────────────────────────┬───────────────┬───────────┬────────────────────────┬──────────────────────────────────────────┤
+│ RISORSA ONTOLOGICA         │ TIPO          │ INTENSITÀ │ MODALITÀ               │ DESCRIZIONE NEL MERCATO                  │
+│                            │               │ (1-10)    │                        │                                          │
+├────────────────────────────┼───────────────┼───────────┼────────────────────────┼──────────────────────────────────────────┤
+│ 8. Prowess intellettuale   │ GUADAGNATA    │   9/10    │ PAURA DI PERDERE       │ La conoscenza è la moneta di questo       │
+│    e acquisizione di       │               │           │ + DESIDERIO DI         │ mercato. Saper riconoscere una versione   │
+│    conoscenza              │               │           │   OTTENERE             │ FAH, una PS3 backward-compatible, un      │
+│                            │               │           │                        │ falso, il differenziale CIB/loose — è    │
+│                            │               │           │                        │ il test implicito di autenticità che la   │
+│                            │               │           │                        │ community applica a chiunque. "Essere     │
+│                            │               │           │                        │ quello che sa" è il massimo traguardo     │
+│                            │               │           │                        │ identitario. Non saperlo è la vergogna    │
+│                            │               │           │                        │ silenziosa che contamina ogni              │
+│                            │               │           │                        │ transazione. Perdere questa risorsa —     │
+│                            │               │           │                        │ attraverso una truffa, un falso non       │
+│                            │               │           │                        │ riconosciuto, un prezzo sbagliato —       │
+│                            │               │           │                        │ significa essere esposto come              │
+│                            │               │           │                        │ incompetente davanti a sé stessi.         │
+├────────────────────────────┼───────────────┼───────────┼────────────────────────┼──────────────────────────────────────────┤
+│ 3. Status sociale          │ GUADAGNATA    │   9/10    │ PAURA DI PERDERE       │ Il retrogaming ha una gerarchia sociale   │
+│    e influenza             │               │           │ + DESIDERIO DI         │ non dichiarata ma pervasiva. In cima:     │
+│    (nella community)       │               │           │   OTTENERE             │ chi trova gli affari impossibili, chi     │
+│                            │               │           │                        │ conosce le varianti, chi post una         │
+│                            │               │           │                        │ "acquisizione gloriosa". In fondo: chi   │
+│                            │               │           │                        │ mette like agli altri, chi fa domande     │
+│                            │               │           │                        │ "ingenue", chi è stato fregato da un      │
+│                            │               │           │                        │ falso. Il piccolo venditore italiano      │
+│                            │               │           │                        │ vuole disperatamente passare dal secondo  │
+│                            │               │           │                        │ gruppo al primo. E sa che l'unico modo    │
+│                            │               │           │                        │ è la conoscenza — non i soldi, non la     │
+│                            │               │           │                        │ fortuna, non gli anni di esperienza da    │
+│                            │               │           │                        │ soli. La conoscenza giusta, sistematica.  │
+├────────────────────────────┼───────────────┼───────────┼────────────────────────┼──────────────────────────────────────────┤
+│ 2. Ricchezza finanziaria   │ GUADAGNATA    │   7/10    │ DESIDERIO DI           │ Il desiderio non è la ricchezza in sé,   │
+│    e possedimenti          │               │           │   OTTENERE             │ ma la dimostrazione concreta che il       │
+│    materiali               │               │           │ + PAURA DI PERDERE     │ proprio hobby non è uno spreco. Il        │
+│                            │               │           │                        │ collezionista vuole mostrare al partner,  │
+│                            │               │           │                        │ alla famiglia, a se stesso, che quello    │
+│                            │               │           │                        │ che fa produce valore misurabile. Non     │
+│                            │               │           │                        │ perché abbia bisogno dei soldi in sé —   │
+│                            │               │           │                        │ ma perché i soldi guadagnati PROVANO       │
+│                            │               │           │                        │ che la competenza esiste. La paura di     │
+│                            │               │           │                        │ perdere questa risorsa si manifesta nel   │
+│                            │               │           │                        │ terrore di svendere, nel rimpianto per    │
+│                            │               │           │                        │ ogni euro lasciato sul tavolo, nella      │
+│                            │               │           │                        │ sindrome del "ho pagato troppo". Ogni     │
+│                            │               │           │                        │ perdita economica è una prova di          │
+│                            │               │           │                        │ incompetenza, non solo una perdita di €.  │
+├────────────────────────────┼───────────────┼───────────┼────────────────────────┼──────────────────────────────────────────┤
+│ 7. Relazioni e             │ INNATA        │   7/10    │ PAURA DI PERDERE       │ I giochi vintage non sono oggetti —       │
+│    dipendenze emotive      │               │           │                        │ sono contenitori di memoria autobio-      │
+│    (dalla nostalgia)       │               │           │                        │ grafica. Ogni cartuccia è legata a un     │
+│                            │               │           │                        │ momento specifico, a una versione di sé   │
+│                            │               │           │                        │ che non può tornare. La paura di perdere  │
+│                            │               │           │                        │ questa risorsa si manifesta nella          │
+│                            │               │           │                        │ paralisi davanti alla decisione di        │
+│                            │               │           │                        │ vendere: vendere il gioco è cedere un     │
+│                            │               │           │                        │ pezzo della propria storia. "Maybe I      │
+│                            │               │           │                        │ can play Mario 2 with God one day and     │
+│                            │               │           │                        │ enjoy that little piece of my childhood   │
+│                            │               │           │                        │ again." (r/gamecollecting, score 224)     │
+│                            │               │           │                        │ La nostalgia è la struttura portante      │
+│                            │               │           │                        │ dell'intero mercato, la lente attraverso  │
+│                            │               │           │                        │ cui ogni transazione acquisisce un        │
+│                            │               │           │                        │ peso emotivo sproporzionato al valore     │
+│                            │               │           │                        │ economico dell'oggetto.                   │
+├────────────────────────────┼───────────────┼───────────┼────────────────────────┼──────────────────────────────────────────┤
+│ 11. Indipendenza           │ GUADAGNATA    │   6/10    │ DESIDERIO DI           │ Il piccolo venditore vuole un reddito     │
+│     e autonomia            │               │           │   OTTENERE             │ supplementare che sia VERAMENTE suo —    │
+│                            │               │           │                        │ non un secondo lavoro, non dipendente     │
+│                            │               │           │                        │ dal capo, non soggetto alle logiche       │
+│                            │               │           │                        │ aziendali. Vendere giochi su Vinted è     │
+│                            │               │           │                        │ un'espressione di autonomia economica:    │
+│                            │               │           │                        │ faccio quello che so, quando voglio,      │
+│                            │               │           │                        │ su quello che amo. La minaccia a questa   │
+│                            │               │           │                        │ risorsa viene dalle piattaforme (eBay     │
+│                            │               │           │                        │ che "tutela il compratore", Vinted che    │
+│                            │               │           │                        │ "non mi dà ragione nei resi"), che        │
+│                            │               │           │                        │ riducono la sua autonomia decisionale     │
+│                            │               │           │                        │ proprio quando pensa di essere il più     │
+│                            │               │           │                        │ libero. L'autonomia è il sogno — la       │
+│                            │               │           │                        │ dipendenza dalle piattaforme è la realtà. │
+├────────────────────────────┼───────────────┼───────────┼────────────────────────┼──────────────────────────────────────────┤
+│ 9. Validazione culturale   │ GUADAGNATA    │   6/10    │ DESIDERIO DI           │ Il collezionista italiano deve           │
+│    e sociale               │               │           │   OTTENERE             │ continuamente giustificare il proprio     │
+│    (legittimazione         │               │           │ + PAURA DI PERDERE     │ hobby di fronte al giudizio esterno:      │
+│    dell'hobby)             │               │           │                        │ "'È ma che spendi soldi in X?'" (Reddit   │
+│                            │               │           │                        │ r/sfoghi, score 542). Il retrogaming      │
+│                            │               │           │                        │ adulto è percepito come infantile o       │
+│                            │               │           │                        │ eccentrico. L'unica risposta socialmente  │
+│                            │               │           │                        │ accettabile è "ci guadagno sopra" —       │
+│                            │               │           │                        │ ma quella risposta attiva lo stigma       │
+│                            │               │           │                        │ interno della community (sei un flipper). │
+│                            │               │           │                        │ La validazione cercata è doppia: esterna  │
+│                            │               │           │                        │ (dimostrare che non è uno spreco di       │
+│                            │               │           │                        │ tempo) e interna (dimostrare di meritare  │
+│                            │               │           │                        │ il rispetto dei propri pari).             │
+├────────────────────────────┼───────────────┼───────────┼────────────────────────┼──────────────────────────────────────────┤
+│ 6. Giovinezza              │ INNATA        │   5/10    │ PAURA DI PERDERE       │ Questa risorsa è attivata in modo         │
+│    e vitalità              │               │           │                        │ subterraneo, non mai dichiarato.          │
+│    (recupero del           │               │           │                        │ Il collezionista di 35-42 anni compra     │
+│    passato)                │               │           │                        │ giochi vintage anche per comprare         │
+│                            │               │           │                        │ indietro una versione di sé stesso che    │
+│                            │               │           │                        │ stava svanendo: quella mattina d'estate   │
+│                            │               │           │                        │ del 1999, la mamma che lo porta nel       │
+│                            │               │           │                        │ "negozio di videogiochi del paese"         │
+│                            │               │           │                        │ (Reddit r/italy, score 1337). Quel        │
+│                            │               │           │                        │ momento non può tornare. Ma il gioco      │
+│                            │               │           │                        │ fisico — lo stesso, quello vero, non      │
+│                            │               │           │                        │ una ROM, non una emulazione — è la        │
+│                            │               │           │                        │ prova tangibile che almeno qualcosa di    │
+│                            │               │           │                        │ quel tempo esiste ancora. Cedere i        │
+│                            │               │           │                        │ giochi è cedere l'unico manufatto fisico  │
+│                            │               │           │                        │ di quella giovinezza.                     │
+├────────────────────────────┼───────────────┼───────────┼────────────────────────┼──────────────────────────────────────────┤
+│ 12. Potere e controllo     │ GUADAGNATA    │   4/10    │ DESIDERIO DI           │ In questo mercato, chi ha il potere è     │
+│     sugli altri            │               │           │   OTTENERE             │ chi sa fare il prezzo. Chi non sa         │
+│    (sul mercato)           │               │           │                        │ viene controllato dal mercato — chi sa    │
+│                            │               │           │                        │ controlla il mercato. La versione         │
+│                            │               │           │                        │ specifica in questo contesto: il potere   │
+│                            │               │           │                        │ di riconoscere il valore dove gli altri   │
+│                            │               │           │                        │ non lo vedono. Comprare a €15 qualcosa    │
+│                            │               │           │                        │ che vale €240 — come la promo copy di     │
+│                            │               │           │                        │ Red Dead Redemption (u/Dezuuu, Reddit      │
+│                            │               │           │                        │ r/Flipping, 2023) — è un atto di potere   │
+│                            │               │           │                        │ che si realizza solo attraverso la        │
+│                            │               │           │                        │ conoscenza. L'asimmetria informativa è    │
+│                            │               │           │                        │ l'unica forma di vantaggio competitivo    │
+│                            │               │           │                        │ accessibile al piccolo venditore.         │
+└────────────────────────────┴───────────────┴───────────┴────────────────────────┴──────────────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PARTE II — LA FERITA PRIMARIA: RIVELAZIONE E PREVISIONE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## LA SPIRALE DIALETTICA — DAL SINTOMO ALLA RADICE
+
+**Contraddizione di superficie:** "Non trovo affari / ci sono ancora affari"
+→ Risoluzione: i canali mainstream sono saturi, le nicchie europee no.
+
+**Contraddizione di secondo livello:** "Voglio guadagnare / non voglio essere un flipper"
+→ Risoluzione: la passione è il linguaggio legittimante, il profitto è il motore reale.
+   Chi usa solo uno dei due non riesce né ad avere il rispetto né i soldi.
+
+**Contraddizione di terzo livello:** "So molte cose / non so abbastanza per guadagnare"
+→ Risoluzione: la conoscenza emotiva (da giocatore, da appassionato) è distinta dalla
+   conoscenza operativa (da venditore, da investitore). Ne possiede la prima, manca
+   della seconda.
+
+**CONTRADDIZIONE RADICE (la più profonda, mai nominata pubblicamente):**
+"Sono un appassionato/esperto da anni — eppure continuo a essere trattato
+come un dilettante dal mercato che amo."
+
+**Questo è il nucleo. Questa è la ferita.**
+
+
+## LA FERITA PRIMARIA — DICHIARAZIONE DEFINITIVA
+
+### "SENTIRSI UN IMPOSTORE NEL PROPRIO STESSO HOBBY."
+
+Nel mercato del retrogaming per collezionisti-venditori italiani, c'è un tema
+che emerge con costanza ossessiva in ogni forum, ogni community, ogni thread —
+non sempre con queste parole, ma sempre con questa sostanza:
+
+**Non sei abbastanza reale. Non sei abbastanza esperto. Sei lì da anni, ami
+questi giochi da quando eri bambino, e continui a essere superato, fregato,
+ignorato, o peggio — irrilevante — nel mercato che senti tuo più di chiunque altro.**
+
+Uno dei post più illuminanti in questa ricerca, proveniente direttamente da
+r/gamecollecting (score 11), recita semplicemente:
+
+> "Finally I am a REAL game collector!"
+
+La parola "REAL" — maiuscola, enfatica, come un traguardo finalmente raggiunto
+— rivela il test implicito che questo mercato applica a chiunque voglia
+appartenervi. C'è un collezionista "reale" e uno "falso". C'è chi "sa" e chi
+non sa. E la paura di essere tra i "falsi", tra quelli "che non sanno", è
+la ferita che contamina ogni singola transazione.
+
+> "It's getting really bad when this hobby is hijacked by fake enthusiasts
+> who only collect as a status symbol and a way to make money, sort of like
+> trading stocks. It completely defeats the original purpose of the hobby,
+> which is for more people to own and celebrate their favourite games and
+> relive those moments from their childhood or teenage years that made them happy."
+— u/[anonimo], Reddit r/gamecollecting, score 129
+
+Questo post, scritto da qualcuno che sta difendendo la "purezza" del hobby,
+rivela per inversione esattamente la ferita del piccolo venditore italiano:
+lui sa che agli occhi di questa community rischia di essere classificato come
+il "fake enthusiast". Vuole i soldi E l'identità da appassionato — ma la
+community non glielo concede facilmente.
+
+La ricerca accademica lo conferma:
+> "retrogamers rhetorically constitute an identity for themselves that is
+> grounded in nostalgia, expertise, and an agonistic relationship to the
+> modern games industry."
+— Heineman, David. "Public Memory and Gamer Identity", gamescriticism.org, Luglio 2023
+
+L'identità del retrogamer è costruita sull'expertise come forma di autorità
+culturale. Chi non possiede quella expertise non appartiene al gruppo.
+E il piccolo venditore italiano — che ha passato anni ad amare questi giochi
+ma non sa ancora come prezzarli correttamente, riconoscere le versioni, evitare
+i falsi — sente questa esclusione nel modo più doloroso possibile:
+sente di non essere abbastanza reale nel proprio stesso hobby.
+
+Confronta con la Ferita Primaria di altri mercati analizzati:
+
+→ Mercato Testosterone uomini anziani: "essere SOSTITUITI da uomini più giovani
+  e virili" — la minaccia viene dall'esterno (i giovani)
+→ Mercato Skincare donne che invecchiano: "paura di essere invisibile" — la
+  minaccia è la sparizione sociale
+→ Mercato articolazioni: "essere messi da parte, essere un peso" — la minaccia
+  è la perdita di utilità
+
+In questo mercato, la ferita è diversa e più sottile: **la minaccia non viene
+dall'esterno — viene dall'interno del gruppo a cui vuoi appartenere.**
+Non è il tempo, non il corpo, non la società a sminuirti. Sono i tuoi pari —
+la tua community — che ti classificano come non abbastanza reale, non abbastanza
+esperto, non abbastanza degno del rispetto che senti di meritare.
+
+E la peggior versione di questa ferita? È quella in cui sei già da anni in
+questo hobby. Hai già investito tempo, denaro, identità. Non sei un neofita.
+Eppure — ogni volta che hai un falso in mano senza riconoscerlo, ogni volta che
+vendi una versione FAH al prezzo di una standard, ogni volta che un compratore
+compra "troppo in fretta" e ti lascia con il sospetto di aver regalato €60 —
+il mercato ti ricorda che non sai abbastanza. Che non sei ancora abbastanza.
+
+Questa è la perdizione:
+
+**Aver amato qualcosa per anni, averci investito la tua identità, e scoprire
+che quell'amore non è sufficiente per essere riconosciuto come esperto nel
+campo che ami.**
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PARTE III — I MESSAGGI E LE IMMAGINI CHE ATTIVANO LE RISORSE
+Cosa "getta sale sulla ferita" e cosa stimola il desiderio di ottenere
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NOTA: Ogni risorsa ontologica ha due tipi di attivatori:
+[SALE] = immagini/messaggi che "getteranno sale sulla ferita", attivando la PAURA
+[DESIDERIO] = immagini/messaggi che stimolano il DESIDERIO DI OTTENERE la risorsa
+
+
+## RISORSA 1 — Prowess Intellettuale (9/10)
+LA CONOSCENZA COME MONETA E IDENTITÀ
+
+### [SALE SULLA FERITA] — I messaggi che bruciano il nervo più esposto
+
+**Il quadro futuro negativo — senza soluzione:**
+
+Immagina di aprire Vinted domani mattina. Trovi una PS3 con la "parte
+anteriore che sembra plastica cromata". La guardi. Pensi: "Sembra normale."
+La lasci perdere. Tre giorni dopo quel venditore posta nel gruppo Facebook:
+"PS3 fat backward-compatible venduta in 20 minuti per €200. Grazie mille!" —
+e nell'immagine puoi vedere che era esattamente la console che hai scartato.
+
+Eri lì. L'hai vista. Non sapevi cosa guardare.
+
+Questa scena si ripeterà ogni settimana, ogni mese, ogni anno, finché
+non impari la differenza tra un frontale opaco e uno riflettente. E la
+cosa più devastante? La differenza si vede in UN SECONDO. Uno. Ma solo
+se sai dove guardare.
+
+Senza quella conoscenza, non sei un collezionista. Sei uno spettatore
+del mercato degli altri.
+
+**Messaggi ad alta intensità per questa ferita:**
+- "Hai visto quel post dove uno ha venduto la PS3 a €240 che tu hai scartato?"
+- "L'acquirente non ha risposto al tuo messaggio. Sai perché era così entusiasta?"
+- "Hai usato PriceCharting? Sì. Quel tool è costruito per il mercato americano.
+  Non per te. Non per la tua versione PAL. Non per il tuo mercato."
+- "Dopo 5 anni di collezionismo, riesci ancora a non riconoscere una versione FAH
+  da una standard a prima vista? Perché nessuno te l'ha mai insegnato nel modo giusto."
+
+**Immagini che bruciano:**
+→ Screenshot di una vendita da €240 conclusa in 20 minuti, con nei commenti
+  "ma questa era backward compatible???" da qualcuno che l'aveva vista e non comprata.
+→ La foto di un carrello Vinted con una console a €30 etichettata "rotta per pezzi"
+  — e accanto la stessa console funzionante su eBay a €220.
+→ La chat di un acquirente che risponde dopo 8 minuti dall'inserzione con
+  solo: "Compro. Manda pure indirizzo." Nessun altro messaggio. Nessuna trattativa.
+  Quello sapeva esattamente cosa aveva trovato. Tu no.
+
+---
+
+### [DESIDERIO DI OTTENERE] — I messaggi che accendono la speranza
+
+**Il quadro futuro positivo — con la soluzione:**
+
+Sei al bar il sabato mattina, caffè in mano, telefono sul tavolo. Arriva
+la notifica Vinted: "Nuova inserzione — PS3 fat, non funzionante, €30."
+
+Apri la foto. Guardi la parte anteriore della console. Vedi il riflesso.
+Lo sai. Lo riconosci in un secondo, senza bisogno di cercare su Google, senza
+bisogno di chiedere a nessuno nel forum.
+
+Clicca compra. Manda messaggio. In 90 secondi è tua.
+
+Quattro giorni dopo la ricevi. Colleghi una chiavetta USB. Trenta minuti.
+La console si riaccende. Fai le foto. Scrivi quattro righe di descrizione
+precisa che mostra che sai quello di cui stai parlando. La pubblichi a €195.
+
+Trentasei ore dopo: venduta. Notifica di pagamento. €195 sul conto.
+Netti, reali, tuoi.
+
+Non è stata fortuna. Hai guardato quello che tutti gli altri guardano
+ogni giorno — e hai visto qualcosa che loro non vedono. Questo è il potere
+della conoscenza applicata. Questo è quello che separa chi guadagna
+da chi guarda.
+
+**Messaggi ad alta intensità per questo desiderio:**
+- "Sai riconoscere in 3 secondi una PS3 backward-compatible da una foto?"
+- "La differenza tra €30 e €220 la vedi nella parte anteriore della console.
+  Una volta che lo sai, non puoi più non vederlo."
+- "I compratori veloci non sono fortunati. Sanno cosa guardare. Tu puoi imparare
+  la stessa cosa."
+- "Hai anni di esperienza con questi giochi. Ti manca solo il sistema per
+  trasformare quello che sai in quello che guadagni."
+
+**Immagini che accendono:**
+→ Una sequenza di 3 foto: PS3 "rotta" per €20 → PS3 funzionante → notifica
+  PayPal per €185. Con didascalia: "90 minuti di lavoro. Sabato mattina."
+→ Il confronto affiancato: la stessa cartuccia GBA con descrizione standard
+  (€25, non venduta dopo 2 settimane) vs. la stessa cartuccia con versione
+  linguistica identificata e descrizione corretta (€95, venduta in 4 ore).
+→ Lo screenshot del messaggio del compratore francese entusiasta che scrive
+  in francese e in inglese: "Finally found one! Thank you!!!" — seguito
+  dalla notifica di €120 ricevuti per qualcosa che avevi quasi prezzato €30.
+
+
+---
+
+## RISORSA 2 — Status Sociale nella Community (9/10)
+L'IDENTITÀ GERARCHICA DEL "QUELLO CHE SA"
+
+### [SALE SULLA FERITA]
+
+**Il quadro futuro negativo:**
+
+Posti nel gruppo Facebook la tua ultima acquisizione. "Ho trovato questo
+gioco PS3 per €5 — affare?" — con la foto.
+
+Arrivano le risposte. Qualcuno scrive: "Bella trovata! Comunque sai che
+quella è una versione normale, vero? C'è la versione FAH che vale molto
+di più. Non che sia colpa tua, non lo sa quasi nessuno."
+
+Non che sia colpa tua, non lo sa quasi nessuno.
+
+Quella frase cortese è una pugnalata. Perché significa: "Sei tra
+quelli che non lo sanno." E ora lo sanno anche gli altri che lo leggono.
+
+Poi arriva un secondo commento, da qualcuno con 2.000+ post nel forum:
+"Classico underpricing europeo. La versione FAH di questo vale €80
+almeno. Peccato." — e mette un emoji 😔.
+
+Peccato. Come se si dispiacesse per te.
+
+Resti a guardare lo schermo con quella sensazione che conosci bene —
+quella che non si chiama frustrazione ma che funziona allo stesso modo.
+Come se il tuo hobby ti avesse appena consegnato la pagella con
+"poteva fare di meglio" scritta in rosso.
+
+**Messaggi che attivano questa ferita:**
+- "Il tipo nel forum che ha 2.000 post e sa sempre il prezzo esatto di tutto.
+  Sai che cosa ha in comune con te che ne sai solo qualcosa? Vuole imparare."
+- "Ogni volta che un compratore risponde in 8 minuti senza trattare,
+  qualcuno nella community sa che hai sottovalutato."
+- "Nella community ci sono quelli che postano gli affari e quelli che
+  mettono like. Da quale parte sei?"
+
+**Immagini che bruciano:**
+→ Un thread del forum dove qualcuno chiede una valutazione: i primi commenti
+  sono "bel gioco" e "bravo" — poi arriva il commento dell'esperto che spiega
+  il vero valore e tutti gli altri scrivono "ooh non lo sapevo" — eccetto
+  il venditore originale, che risponde "ehm... già, non sapevo".
+→ La schermata di un'asta eBay terminata a €340 per un gioco che tu avevi
+  prezzato €60 su Vinted due settimane prima — esattamente stesso titolo,
+  stessa versione, stesse condizioni.
+
+---
+
+### [DESIDERIO DI OTTENERE]
+
+**Il quadro futuro positivo:**
+
+È venerdì sera. Un nuovo utente nel gruppo scrive una domanda su una
+cartuccia GBA che ha trovato al mercatino: "Quanto vale? Non riesco a
+trovare informazioni."
+
+Tu hai visto quel gioco. Sai la risposta. Scrivi: "Quella è la versione
+italiana — vale circa €45-60 loose. Se hai ancora il manuale, siamo sui
+€120-140. Se hai anche la scatola originale, anche solo rovinata, stiamo
+parlando di €180+. La versione francese della stessa cartuccia vale ancora
+di più."
+
+Arriva la risposta: "WOW grazie mille non me l'aspettavo! Ho anche il
+manuale! Hai salvato la mia vendita."
+
+Tre giorni dopo posta un aggiornamento: "Venduto per €125 con manuale.
+Grazie a [il tuo nome] nel thread precedente!"
+
+Non hai guadagnato un euro su quella transazione. Ma nella community, per
+questa settimana, sei "quello che sa". E questa valuta — il rispetto di
+chi conosce il mercato quanto te o di più — non si compra. Si guadagna.
+
+**Messaggi che attivano questo desiderio:**
+- "Quando postano una domanda sul forum e la tua risposta è quella giusta,
+  non stai solo aiutando — stai costruendo la reputazione che vale più
+  di qualsiasi inserzione."
+- "C'è una differenza tra chi vende su eBay e chi la community chiama
+  quando vuole sapere quanto vale qualcosa."
+- "Non devi avere 10 anni di esperienza per essere rispettato. Devi sapere
+  le cose giuste."
+
+**Immagini che accendono:**
+→ Uno screenshot dove qualcuno scrive nel gruppo: "Per questa roba chiedo
+  sempre a [nome] perché conosce il mercato europeo meglio di chiunque altro."
+→ La conversazione in DM con un compratore che scrive: "Sei il venditore
+  più preciso su Vinted. Puoi avvisarmi quando hai altra roba PS3?"
+
+
+---
+
+## RISORSA 3 — Ricchezza Finanziaria e Possedimenti (7/10)
+IL PROFITTO COME PROVA DI COMPETENZA
+
+### [SALE SULLA FERITA]
+
+**Il quadro futuro negativo:**
+
+Tua moglie o fidanzata guarda il tablet mentre sei in cucina a preparare
+il caffè. Sta scorrendo l'estratto conto di questo mese.
+
+Non dice niente, ma senti che si è fermata su qualcosa.
+"Quanto hai speso su eBay questo mese?"
+"€340."
+"E quanto hai guadagnato?"
+"€280."
+
+Silenzio. Non lungo. Non drammatico. Ma abbastanza.
+
+"Sai che stai guadagnando meno di quello che spendi, vero?"
+
+Non lo stai facendo per i soldi, lo sai. Ci credi davvero. Ma non riesci
+a dirlo ad alta voce in questo momento perché lei ha fatto i conti veloci
+in testa e il saldo è negativo. E quella cifra — quella differenza di €60 —
+non vale una discussione. Ma vale un silenzio.
+
+Poi a cena con gli amici, uno chiede: "Ma ci guadagni davvero con quei
+giochi vecchi?" e aspetta la risposta con un mezzo sorriso già pronto
+nel caso in cui la risposta sia no.
+
+Vuoi che la risposta sia sì. Vuoi avere un numero concreto da dire.
+Non ce l'hai.
+
+**Messaggi che bruciano:**
+- "Quanto hai guadagnato questo mese? Puoi dirlo con certezza o hai ancora
+  quella sensazione vaga che forse stai andando in pari?"
+- "Le fee di eBay, la spedizione, i materiali. Hai mai calcolato il vero netto?"
+- "Ha comprato subito. Senza trattare. Senza chiedere. Ti sei mai chiesto perché?"
+
+---
+
+### [DESIDERIO DI OTTENERE]
+
+**Il quadro futuro positivo:**
+
+Aprile. Lunedì sera. Stai guardando Netflix con il tablet sul divano.
+Apri l'app Vinted per abitudine.
+
+In mezz'ora hai venduto due giochi: €45 e €85. Totale: €130.
+Hai speso 20 minuti per fotografarli la settimana scorsa.
+Spedizione già prenotata e pagata dall'acquirente.
+
+Chiudi l'app. Riprendi il film.
+
+Questa scena si ripete circa tre volte a settimana, nelle settimane
+buone. A fine mese, guardi il totale: €680 netti. Non ogni mese.
+Ma la media degli ultimi sei mesi è €420 al mese.
+
+Quando tua moglie chiede "quanto hai guadagnato?" hai la risposta.
+Non è uno stipendio. Non deve esserlo. È quello che paghi le vacanze.
+È quello che ti permette di comprare il gioco che vuoi senza fare
+i conti. È quello che trasforma il sabato mattina — che passeresti
+comunque a scrollare Vinted — in qualcosa che produce valore reale.
+
+**Messaggi che accendono:**
+- "€13.500 in 18 mesi. Non su eBay americano. Su Vinted. In Europa.
+  Con un budget iniziale minimo. Con tre ore a settimana."
+  (u/Dezuuu, Reddit r/Flipping, Aprile 2023)
+- "Non stai cercando di diventare ricco. Stai cercando di dimostrare
+  che quello che ami vale anche economicamente. Questo è possibile.
+  Con il sistema giusto."
+- "Alla fine del mese, quando guardi il conto, vuoi sapere esattamente
+  quanto hai guadagnato — non sperare che sia positivo."
+
+**Immagini che accendono:**
+→ Uno screenshot del totale mensile Vinted/eBay con il breakdown chiaro:
+  entrate, uscite, netto. Un numero pulito e leggibile.
+→ La conversazione in cui il venditore risponde alla domanda "ci guadagni?"
+  con serenità e un numero preciso, e nella conversazione non c'è più
+  nessuna difensiva, nessuna giustificazione.
+
+
+---
+
+## RISORSA 4 — Relazioni ed Emozioni Nostalgiche (7/10)
+IL PASSATO FISICAMENTE PERDUTO
+
+### [SALE SULLA FERITA]
+
+**Il quadro futuro negativo:**
+
+Hai venduto quella cartuccia di Super Mario World. L'avevi da quando avevi
+11 anni. Non era rarissima — valeva sui €25-30. Non riuscivi a trovare
+compratori per settimane, quindi alla fine l'hai data via per €18.
+
+Adesso c'è un'altra persona che la tiene in mano.
+
+La cartuccia era graffiata nel punto esatto dove la tenevi per inserirla
+nel SNES — per tutti quegli anni, sempre nello stesso modo. Quella graffiatura
+sei tu. È il tuo pollice di quando avevi 11 anni.
+
+E l'hai data via per €18.
+
+Non è una perdita economica. Non è nemmeno una perdita razionale.
+È qualcosa che non ha un nome preciso ma che ti torna in mente di notte.
+
+> "I still want to cry."
+— u/Wandering---_---soul, Reddit r/gamecollecting, Febbraio 2024
+
+> "Maybe I can play Mario 2 with God one day and enjoy that little piece
+> of my childhood again."
+— u/[anonimo], Reddit r/gamecollecting, score 224
+
+**Messaggi che bruciano:**
+- "Quante volte hai venduto qualcosa e poi ci hai ripensato?"
+- "Quel gioco non è più tuo. L'hai ceduto per quello che ti hanno offerto.
+  Tra 2 anni, quando varranno il doppio, non saranno neanche nella tua
+  collezione."
+- "Stai vendendo la tua storia. Almeno vendi a un prezzo che rispetta quello
+  che vale davvero."
+
+---
+
+### [DESIDERIO DI OTTENERE]
+
+**Il quadro futuro positivo:**
+
+C'è un gioco che hai cercato per tre anni. Era il gioco che non riuscivi
+ad avere da bambino — quello del bambino ricco del paese che lo aveva e
+lo portava a scuola. Per anni hai tentato di trovarlo CIB — non solo la
+cartuccia, non solo "funzionante". Completo. Nella scatola originale. Col
+manuale. Come doveva essere.
+
+Lo trovi su Vinted. Il prezzo è sbagliato — il venditore non ha verificato
+la versione linguistica. Tu sì. Lo compri.
+
+Quando arriva, lo apri con cura. La scatola ha qualche usura agli angoli —
+normale per un gioco di trent'anni. Il manuale è integro. La cartuccia
+è pulita, originale, autentica. Lo inserisci nel SNES.
+
+Quella sensazione — che non è solo nostalgia perché è anche qualcosa di
+più fisico, più reale — è il motivo per cui sei in questo mercato. Non per
+i soldi. Per momenti come questo.
+
+Ma sapere come funziona il mercato ti ha permesso di essere tu quello
+che l'ha trovato, invece di guardare qualcun altro postarlo nel forum.
+
+**Messaggi che accendono:**
+- "Il gioco fisico è l'unico manufatto tangibile di quella parte della tua storia."
+- "Non stai comprando un oggetto. Stai comprando indietro qualcosa che era
+  tuo molto prima che diventasse 'un investimento'."
+- "La differenza tra trovare il tuo pezzo mancante e perderlo per €10 è
+  sapere dove cercare. Questo puoi impararlo."
+
+
+---
+
+## RISORSA 5 — Indipendenza e Autonomia (6/10)
+IL REDDITO CHE NON DEVI A NESSUNO
+
+### [SALE SULLA FERITA]
+
+**Il quadro futuro negativo:**
+
+Hai venduto. La spedizione è andata. L'acquirente ha aperto una disputa su
+Vinted: "Il gioco non funziona come descritto." Funzionava perfettamente —
+lo sai. Ma non puoi provarlo a distanza.
+
+Aspetti la risposta dell'assistenza di Vinted. Arriva dopo 4 giorni:
+"A seguito della nostra analisi, abbiamo deciso di rimborsare l'acquirente.
+L'importo è stato addebitato dal tuo saldo."
+
+Non hai sbagliato niente. Hai inscatolato il gioco con cura, l'hai
+fotografato, l'hai descritto accuratamente. Ma Vinted ha deciso che
+l'acquirente ha ragione. Senza vederlo. Senza chiederti niente.
+
+> "Caso in cui ha vinto l'acquirente: il pacco a suo dire è arrivato
+> piuttosto rovinato [...] comunque li si sono inventati che era colpa
+> mia che non avevo fatto un pacco adeguato."
+— utente Link900, Forum IGN Italia, 2 Aprile 2023
+
+Sei "libero" di vendere. Ma non sei mai davvero libero — perché la
+piattaforma può sfilare qualsiasi guadagno in qualsiasi momento,
+per qualsiasi ragione, e non hai un piano B.
+
+---
+
+### [DESIDERIO DI OTTENERE]
+
+**Il quadro futuro positivo:**
+
+Non c'è una riunione che dipende da questo. Non c'è un capo che aspetta
+i tuoi risultati. Non c'è un obiettivo di vendita mensile che qualcuno
+ti ha assegnato dall'esterno.
+
+Sei al mercatino con la lista mentale delle cose che sai come vendere.
+Se trovi qualcosa, bene. Se non trovi niente, hai comunque fatto una
+passeggiata al sole. Le notifiche che arrivano alle 7 di sera da Vinted
+non sono urgenze — sono opportunità che puoi cogliere o ignorare.
+
+Questo è il tuo tempo. Il tuo sistema. I tuoi risultati.
+
+Quando funziona — e funziona, con il sistema giusto — la sensazione
+non è di aver guadagnato uno stipendio. È di aver usato bene il
+sabato mattina. Ed è questa la differenza tra un secondo lavoro e
+un hobby che produce valore.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PARTE IV — SINTESI OPERATIVA: LA FERITA E IL SUO ANTIDOTO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## DICHIARAZIONE FINALE DELLA FERITA PRIMARIA
+
+Nel mercato dello skincare per donne, la ferita primaria era la paura di
+essere invisibile. Nel mercato del testosterone per uomini, era la paura
+di essere sostituiti. Nel mercato delle articolazioni, era la paura di
+essere un peso.
+
+**Nel mercato del retrogaming per il piccolo venditore italiano, la ferita
+primaria è questa:**
+
+### "SENTIRSI UN IMPOSTORE NEL PROPRIO STESSO HOBBY — L'ADULTO CHE AMA
+QUESTI GIOCHI DA TRENT'ANNI E NON SA ANCORA ABBASTANZA DA ESSERE PRESO SUL SERIO."
+
+Tre declinazioni concrete:
+
+**1. L'Impostore Ignorante** — Conosco questi giochi da quando ero bambino.
+Ho passato anni ad amarli, collezionarli, studiarli. Eppure il mercato
+continua a dimostrarmi che so la cosa sbagliata: so la storia dei franchise,
+so i personaggi, so le colonne sonore. Ma non so riconoscere una versione
+PAL da una FAH. Non so vedere una PS3 backward-compatible in una foto. Non
+so che la mia versione italiana di quel GBA vale il doppio in Francia.
+E questo non-sapere mi costa soldi, mi costa rispetto, mi costa identità.
+
+**2. L'Impostore Identitario** — Voglio guadagnare su questi giochi. Ma
+nella community chi guadagna è il villain. Quindi dico che colleziono "per
+amore" — e intanto guardo i prezzi ogni mattina, calcolo i margini, mi
+sveglio di notte pensando se ho sbagliato il prezzo. Non sono né un
+appassionato puro né un venditore serio. Sono bloccato in un mezzo che
+non è riconoscibile da nessuno dei due gruppi.
+
+**3. L'Impostore Temporale** — Avrei dovuto sapere queste cose prima.
+Avrei dovuto riconoscere quella PS3 backward-compatible quando l'ho vista.
+Avrei dovuto tenere quella versione FAH invece di venderla a prezzo di
+mercato americano. Avrei dovuto. Ogni transazione passata è un archivio
+di errori che non conosco ancora per intero — ma che si riveleranno uno
+per uno, nei prossimi anni, ogni volta che per caso apro un forum e vedo
+qualcuno parlare di qualcosa che avevo in mano e non ho saputo valorizzare.
+
+**La soluzione che questo mercato cerca — e che nessuna guida esistente
+offre davvero — non è semplicemente un metodo per fare soldi.**
+
+**È il permesso di essere finalmente un esperto reale del mercato che ama.
+Non l'appassionato che vende ogni tanto. Non il flipper che specula senza
+coscienza. L'"esperto del mercato europeo PAL" — che usa la conoscenza
+come vantaggio competitivo, che sa riconoscere il valore dove gli altri
+non lo vedono, che può rispondere alle domande della community con
+precisione, che può dire al partner il numero esatto guadagnato quel mese,
+che non si sente mai più un impostore in casa propria.**
+
+---
+
+## IL COPY E LE IMMAGINI FONDAMENTALI
+
+**Il copy che apre la ferita (la paura):**
+> "Hai passato anni con questi giochi. Sai tutto di loro. Eppure il mercato
+> continua a dimostrarsi più grande di te."
+
+**Il copy che guarisce (il desiderio):**
+> "Non hai bisogno di più anni di esperienza. Hai bisogno del sistema che
+> trasforma quello che già sai in qualcosa che il mercato rispetta."
+
+**L'immagine che brucia di più:**
+La foto di una console o gioco venduto a prezzo sbagliato — con accanto,
+silenziosamente, la stessa cosa venduta dal "concorrente esperto" per tre
+volte tanto. Non con commenti aggressivi. Solo con i due numeri. Il divario
+parla da solo.
+
+**L'immagine che guarisce di più:**
+Non i soldi. Non il numero sul conto. Ma la conversazione in DM dove un
+collezionista serio ti chiede consiglio — e tu lo sai dare. Quella è la
+prova che sei diventato quello che volevi essere. Quella è la prova che
+non sei più un impostore.
+
+> "You'll probably even end up getting regular customers who recognize
+> your passion and knowledge."
+— u/Dezuuu, Reddit r/Flipping, Aprile 2023
+
+> "Collecting becomes a way to assert expertise and status within a community.
+> Knowledge of rare prototypes, factory defects, or regional variations serves
+> as cultural capital. Being able to distinguish a 'Nintendo Power' promotional
+> cartridge from a standard release isn't trivia—it's proof of dedication
+> and discernment."
+— Clara Davis, Alibaba Product Insights, 20 Febbraio 2026
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+APPENDICE — LA FERITA ATTRAVERSO I SOTTO-TARGET
+Come si manifesta diversamente nei tre profili del mercato
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**SUBSET A — Il Collezionista-Flipper Attivo (25-42 anni)**
+Ferita dominante: risorsa #8 (conoscenza) + risorsa #3 (status community)
+"So da anni come funziona questo hobby. Eppure non so abbastanza da fare
+la differenza tra €30 e €200 su una stessa PS3. E questo mi fa sentire
+un dilettante con anni di esperienza — il che è peggio di essere semplicemente
+un dilettante."
+
+**SUBSET B — Il Collezionista-Smaltitore (30-52 anni)**
+Ferita dominante: risorsa #2 (ricchezza) + risorsa #4 (nostalgia)
+"Ho costruito questa collezione per anni. Non posso svendere. Ma non so
+quanto vale davvero. Se la svendo, mi sento stupido. Se aspetto troppo,
+potrebbe valere meno. E nel frattempo occupa spazio e crea conflitti.
+Non so dove finisce il valore emotivo e dove inizia il valore economico."
+
+**SUBSET C — Il Nuovo Entrante (18-32 anni)**
+Ferita dominante: risorsa #3 (status community) + risorsa #8 (conoscenza)
+"Sono arrivato tardi alla festa. Tutti sanno già queste cose tranne me.
+Ho paura di fare una domanda stupida nel forum. Ho paura di comprare
+un falso e farlo vedere a tutti. Voglio imparare ma non voglio sembrare
+quello che non sa niente — anche se è esattamente quello che sono adesso."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SOMMARIO OPERATIVO PER IL MARKETING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+LA FERITA PRIMARIA IN UNA RIGA:
+→ "Sentirsi un impostore nel proprio stesso hobby, dopo anni di passione e
+   investimento, perché non si ha il sistema per trasformare l'amore in
+   competenza riconoscibile."
+
+LE DUE POLARITÀ EMOTIVE DA ATTIVARE:
+
+PAURA DI PERDERE (sale sulla ferita):
+→ La vendita che sparisce in 8 minuti mentre eri distratto, e tu non sai perché
+→ Il commento del forum che dice "peccato" dopo che hai prezzato male qualcosa
+→ I soldi lasciati sul tavolo che non appaiono mai nel tuo estratto conto ma
+   appaiono nel sorriso soddisfatto del compratore
+
+DESIDERIO DI OTTENERE (stimolo al cambiamento):
+→ La sensazione di riconoscere in un secondo quello che gli altri non vedono
+→ La risposta rispettosa di un esperto della community alla tua analisi
+→ Il numero mensile che mostri al partner senza dover giustificare niente
+
+IL MESSAGGIO UNIFICANTE:
+"Non ti manca l'esperienza. Ti manca il sistema. E una volta che ce l'hai,
+il mercato europeo — che il 99% dei venditori non conosce come dovresti
+conoscerlo tu — diventa il tuo vantaggio competitivo."
+
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE CAPITOLO 03 — CORE WOUND
+Redatto: 26 Febbraio 2026 | Fonti: 15+ verificate | Citazioni verbatim preservate
+Costruito su: market_spec.txt + cap.01 + cap.02 + ricerca autonoma supplementare
+═══════════════════════════════════════════════════════════════════════════════

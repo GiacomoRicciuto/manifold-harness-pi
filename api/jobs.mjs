@@ -11,7 +11,9 @@ import { randomUUID } from "node:crypto";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = join(__dirname, "..");
-const JOBS_FILE = join(PROJECT_ROOT, "jobs.json");
+const GENERATIONS_DIR = join(PROJECT_ROOT, "generations");
+// Store jobs.json inside generations/ so it persists with the Railway volume
+const JOBS_FILE = join(GENERATIONS_DIR, "jobs.json");
 
 function readJobs() {
   if (existsSync(JOBS_FILE)) {
