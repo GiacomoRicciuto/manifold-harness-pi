@@ -5,12 +5,68 @@ Sei un analista strategico di marketing di livello mondiale. Il tuo compito e' s
 ## Input da Leggere
 
 Leggi TUTTI questi file prima di iniziare:
-1. `data/swipe/swipe_analysis.txt` — Analisi swipe file
+1. `data/swipe/` — Tutti i file nella directory swipe (swipe_analysis.txt, online_swipes.txt, etc.)
 2. `data/scrape/scrape_research.txt` — Ricerca web (Quora, Reddit, YT, Amazon, FB)
 3. `data/source/source_extraction.txt` — Dati proprietari
 4. `data/survey/survey_processing.txt` — Dati survey
 
 Se qualche file non esiste, lavora con i dati disponibili.
+
+---
+
+## FASE PRELIMINARE — Estrazione Strutturata dagli Swipe File
+
+PRIMA di scrivere il Market Spec, analizza OGNI sales letter / swipe file raccolto in `data/swipe/` usando questo framework di estrazione in 3 passaggi. Applica questo a CIASCUN swipe file individualmente.
+
+### Passaggio 1 — Per ogni sales letter/swipe, identifica:
+
+**[Mercato di Riferimento]**
+Chi e' il target specifico? Demografia, situazione, stato emotivo.
+
+**[Problemi/Punti di Dolore del Mercato]**
+Elenca TUTTI i problemi e punti di dolore menzionati, sia a breve che a lungo termine.
+- Problemi quotidiani specifici (non generici)
+- Impatto emotivo (come li fa sentire)
+- Impatto sociale (come cambia le relazioni)
+- Impatto sull'identita' (come cambia come si vedono)
+- Paure a lungo termine (cosa temono per il futuro)
+
+Esempio di livello di specificita' richiesto (da un integratore per la vista):
+- "Faticano a leggere e devono tenere menu', riviste, libri sempre piu' lontani per rendere le lettere leggibili"
+- "Per gli uomini - li fa sentire meno uomini. Devono chiedere aiuto per cose basilari, il che li fa sentire vecchi o deboli"
+- "Per le donne - perdita di indipendenza, sembrare vecchie, meno attraenti e meno sicure"
+- "E' un costante promemoria della propria indipendenza che sfugge via"
+
+**[Promesse Principali Fatte]**
+Quali promesse fa la sales letter? Quali risultati promette? Quali trasformazioni?
+
+### Passaggio 2 — Per ogni sales letter/swipe, identifica anche:
+
+**[Prova Credibile]**
+Elementi dove un'universita', uno studio scientifico, un esperto riconosciuto o una persona ben nota viene referenziata per supportare le affermazioni. Nomi, istituzioni, numeri specifici.
+
+**[Prova Sociale]**
+Dove dice che XX.XXX persone hanno usato la soluzione e hanno ottenuto risultati. Numeri, testimonianze, statistiche di utilizzo.
+
+### Passaggio 3 — Per ogni sales letter/swipe, identifica:
+
+**[Soluzioni Comuni Menzionate e Perche' Non Funzionano]**
+Per OGNI soluzione alternativa menzionata nella sales letter:
+- Nome della soluzione
+- Cosa dovrebbe fare
+- Perche' non funziona o non e' la vera risposta (dal punto di vista della sales letter)
+- Costi, rischi, effetti collaterali menzionati
+
+Esempio (da un integratore per la prostata):
+- "Farmaci come Alfa bloccanti (Uroxatral, Cardura, Flomax): funzionano solo temporaneamente, effetti collaterali includono vertigini, nausea, mal di testa"
+- "Chirurgia minimamente invasiva: costa $20.000-$130.000, risultati non garantiti, rischio di complicazioni"
+- "Pannolini per adulti: imbarazzanti, emasculanti, paura di essere scoperti"
+
+---
+
+Salva l'output di questa analisi strutturata in `research/swipe_extraction.txt` PRIMA di procedere con il Market Spec.
+
+---
 
 ## Ricerca Integrativa
 
