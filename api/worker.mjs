@@ -30,9 +30,11 @@ if (!jobId || !clientName || !productInfo || !projectDir) {
 const jobsPath = join(PROJECT_ROOT, "api", "jobs.mjs");
 const { updateJob } = await import(jobsPath);
 
-// Import agent
+// Import agent and config
 const agentPath = join(PROJECT_ROOT, "src", "agent.mjs");
 const { runManifoldAgent } = await import(agentPath);
+const configPath = join(PROJECT_ROOT, "src", "config.mjs");
+const { DEFAULT_MODEL, DEFAULT_PROVIDER } = await import(configPath);
 
 // Setup project dir and logging
 const absDir = resolve(projectDir);
@@ -64,8 +66,8 @@ try {
 
   await runManifoldAgent({
     projectDir: absDir,
-    model: model || "claude-opus-4-5",
-    provider: provider || "anthropic",
+    model: model || DEFAULT_MODEL,
+    provider: provider || DEFAULT_PROVIDER,
     clientName,
     productInfo,
     maxIterations: null,

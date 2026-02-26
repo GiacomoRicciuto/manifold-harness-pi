@@ -1,6 +1,6 @@
 {
   "defaultProvider": "anthropic",
-  "defaultModel": "claude-opus-4-5",
+  "defaultModel": "claude-sonnet-4-6",
   "defaultThinkingLevel": "high",
   "compaction": {
     "enabled": true,

@@ -28,7 +28,7 @@ import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { createJob, getJob, updateJob, deleteJob, listJobs } from "./jobs.mjs";
-import { ALL_STEPS } from "../src/config.mjs";
+import { ALL_STEPS, DEFAULT_MODEL, DEFAULT_PROVIDER } from "../src/config.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = join(__dirname, "..");
@@ -81,8 +81,8 @@ function spawnWorker(jobId, clientName, productInfo, projectDir, model, provider
   const workerPath = join(__dirname, "worker.mjs");
   const child = fork(workerPath, [
     jobId, clientName, productInfo, projectDir,
-    model || "claude-opus-4-5",
-    provider || "anthropic",
+    model || DEFAULT_MODEL,
+    provider || DEFAULT_PROVIDER,
   ], {
     cwd: PROJECT_ROOT,
     detached: true, // Create new process group (like os.setpgrp)
