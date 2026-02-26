@@ -1,7 +1,7 @@
 {
   "client_name": "Mercato dei videogiochi vecchi giochi",
   "product_info": "Mercato dei vecchi videogiochi - collezionismo, compravendita, investimento",
-  "current_step_index": 21,
+  "current_step_index": 20,
   "completed_steps": [
     "swipe_analysis",
     "scrape_research",
@@ -22,7 +22,6 @@
     "12_interoceptive_mechanisms",
     "13_language_patterns",
     "14_ccc",
-    "15_ejection_triggers",
-    "pdf_generation"
+    "15_ejection_triggers"
   ]
 }

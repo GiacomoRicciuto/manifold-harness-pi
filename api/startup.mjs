@@ -60,7 +60,7 @@ if (existsSync(SEED_DIR)) {
           client_name: clientName,
           product_info: productInfo,
           project_dir: destDir,
-          status: "done",
+          status: "stopped",
           created_at: new Date().toISOString(),
           pid: null,
           error: null,
