@@ -16,8 +16,8 @@ export const DEFAULT_PROVIDER = "anthropic";
 // Timing
 // ---------------------------------------------------------------------------
 export const AUTO_CONTINUE_DELAY = 3; // seconds between sessions
-export const SESSION_TIMEOUT_C1 = 600000;  // 10 min for Cycle 1 (lighter tasks)
-export const SESSION_TIMEOUT_C2 = 1800000; // 30 min for Cycle 2 (heavy research + writing)
+export const SESSION_TIMEOUT_C1 = 1200000; // 20 min for Cycle 1 (research + web search)
+export const SESSION_TIMEOUT_C2 = 1200000; // 20 min for Cycle 2 (heavy research + writing)
 
 // ---------------------------------------------------------------------------
 // Pi-specific settings
