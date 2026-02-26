@@ -1,563 +1,696 @@
 #!/usr/bin/env python3
 """
-Market Research PDF Designer
-Transforms a raw markdown manifold brief into a McKinsey-level PDF document.
-v3 — typography: 9.5pt body, 1.52 line-height (McKinsey/BCG enterprise standard)
+Manifold PDF Designer v4
+========================
+Transforms avatar_manifold.txt into an exceptionally beautiful, colorful,
+easy-to-read professional PDF document.
+
+Designed for the specific manifold format with:
+- CAPITOLO headers between ═══ decorative lines
+- SEZIONE headers between ━━━ decorative lines
+- ## Subsection headers
+- > Blockquotes with — attribution
+- → Arrow emotion/insight items
+- **Bold** paragraph openers and inline emphasis
+- DATI/DATO callout blocks
+- Fonte: source citations
+- ASCII box-drawing tables (┌│└ etc.)
+- ✓ Checkmark lists
+- [N.N] Numbered belief items
+- ───── thin dividers
+- CLUSTER/CATENA/PATTERN section labels
+- A.01 — "Title" pattern entries
+- FRASE ESATTA / FREQUENZA / ANALISI sub-labels
 """
 
 import sys
 import re
-import os
-import subprocess
+import html as html_mod
 from pathlib import Path
 from datetime import datetime
 
 # ── THEME ENGINE ──────────────────────────────────────────────────────────────
 
 THEMES = {
+    "gaming_retro": {
+        "name": "Gaming / Retro / Collezionismo",
+        "keywords": ["videogioc", "retrogam", "gaming", "console", "nintendo", "playstation",
+                     "snes", "nes", "game boy", "ps3", "vinted", "ebay", "collezion",
+                     "cartuccia", "retro", "flipper", "giochi", "gioco"],
+        "primary": "#1B1040",
+        "accent": "#7C3AED",
+        "accent2": "#A78BFA",
+        "accent3": "#DDD6FE",
+        "warm": "#F59E0B",
+        "warm_light": "#FEF3C7",
+        "danger": "#EF4444",
+        "danger_light": "#FEE2E2",
+        "success": "#10B981",
+        "success_light": "#D1FAE5",
+        "info": "#3B82F6",
+        "info_light": "#DBEAFE",
+        "text": "#1E293B",
+        "text_light": "#64748B",
+        "light_bg": "#F5F3FF",
+        "light_bg2": "#FDF4FF",
+        "gradient_start": "#1B1040",
+        "gradient_mid": "#312E81",
+        "gradient_end": "#5B21B6",
+        "chapter_bg": "#0F0A2A",
+        "font_display": "Space Grotesk",
+        "font_body": "Inter",
+        "stat_color": "#7C3AED",
+    },
     "saas_tech": {
         "name": "SaaS / Tech / AI",
         "keywords": ["saas", "ai", "software", "app", "digital", "tech", "api", "platform",
                      "cloud", "vocal", "voce", "agente", "automatiz", "chatbot", "crm"],
         "primary": "#1A1F36", "accent": "#4F46E5", "accent2": "#818CF8",
-        "accent3": "#C7D2FE", "text": "#1E293B", "light_bg": "#F1F5FF",
-        "gradient_start": "#1A1F36", "gradient_end": "#312E81",
+        "accent3": "#C7D2FE", "warm": "#F59E0B", "warm_light": "#FEF3C7",
+        "danger": "#EF4444", "danger_light": "#FEE2E2",
+        "success": "#10B981", "success_light": "#D1FAE5",
+        "info": "#3B82F6", "info_light": "#DBEAFE",
+        "text": "#1E293B", "text_light": "#64748B",
+        "light_bg": "#F1F5FF", "light_bg2": "#F8FAFC",
+        "gradient_start": "#1A1F36", "gradient_mid": "#1E3A5F",
+        "gradient_end": "#312E81",
         "chapter_bg": "#0F172A", "font_display": "Space Grotesk",
-        "font_body": "Inter", "deco_shape": "circuit", "stat_color": "#4F46E5",
-    },
-    "healthcare": {
-        "name": "Healthcare / Medicina",
-        "keywords": ["medic", "clinic", "salut", "pazient", "ospedale", "dottore", "dentist",
-                     "odontoiatri", "farmac", "terapia", "diagnosi", "studio medico"],
-        "primary": "#0F4C81", "accent": "#0EA5E9", "accent2": "#38BDF8",
-        "accent3": "#BAE6FD", "text": "#1E293B", "light_bg": "#F0F9FF",
-        "gradient_start": "#0F4C81", "gradient_end": "#0369A1",
-        "chapter_bg": "#082F49", "font_display": "Playfair Display",
-        "font_body": "Source Serif 4", "deco_shape": "cross", "stat_color": "#0EA5E9",
-    },
-    "real_estate": {
-        "name": "Real Estate / Immobiliare",
-        "keywords": ["immobil", "real estate", "agenzia immobiliare", "affitto", "vendita casa",
-                     "mutuo", "appartamento", "terreno", "investimento immobiliare"],
-        "primary": "#1C3A2E", "accent": "#10B981", "accent2": "#34D399",
-        "accent3": "#A7F3D0", "text": "#1E293B", "light_bg": "#F0FDF4",
-        "gradient_start": "#1C3A2E", "gradient_end": "#065F46",
-        "chapter_bg": "#052E16", "font_display": "Cormorant Garamond",
-        "font_body": "Lora", "deco_shape": "arch", "stat_color": "#10B981",
-    },
-    "legal": {
-        "name": "Legal / Studi Legali",
-        "keywords": ["legale", "avvocato", "studio legale", "notaio", "contratto", "giuridic",
-                     "sentenza", "causa", "consulenza legale", "diritto"],
-        "primary": "#2D2010", "accent": "#B45309", "accent2": "#D97706",
-        "accent3": "#FDE68A", "text": "#1C1917", "light_bg": "#FFFBEB",
-        "gradient_start": "#2D2010", "gradient_end": "#78350F",
-        "chapter_bg": "#1C1107", "font_display": "Cormorant Garamond",
-        "font_body": "EB Garamond", "deco_shape": "scale", "stat_color": "#B45309",
-    },
-    "beauty_wellness": {
-        "name": "Beauty / Wellness / Estetica",
-        "keywords": ["estetica", "beauty", "wellness", "parrucchiere", "spa", "centro estetico",
-                     "massaggio", "trattamento", "bellezza", "cura del corpo"],
-        "primary": "#4A1942", "accent": "#C026D3", "accent2": "#E879F9",
-        "accent3": "#F5D0FE", "text": "#1E1B2E", "light_bg": "#FDF4FF",
-        "gradient_start": "#4A1942", "gradient_end": "#86198F",
-        "chapter_bg": "#2E1065", "font_display": "Playfair Display",
-        "font_body": "Raleway", "deco_shape": "flower", "stat_color": "#C026D3",
-    },
-    "finance": {
-        "name": "Finance / Consulenza Finanziaria",
-        "keywords": ["finanza", "investimento", "consulente finanziario", "banca", "assicurazione",
-                     "portafoglio", "rendimento", "risparmio", "fiscale", "commercialista"],
-        "primary": "#0A2540", "accent": "#1570EF", "accent2": "#53B1FD",
-        "accent3": "#B2DDFF", "text": "#101828", "light_bg": "#EFF8FF",
-        "gradient_start": "#0A2540", "gradient_end": "#1D4ED8",
-        "chapter_bg": "#020617", "font_display": "Libre Baskerville",
-        "font_body": "IBM Plex Sans", "deco_shape": "chart", "stat_color": "#1570EF",
-    },
-    "restaurant_food": {
-        "name": "Ristorazione / Food",
-        "keywords": ["ristorante", "ristorazione", "catering", "food", "cucina", "chef",
-                     "pizzeria", "bar", "osteria", "trattoria", "gastronomia"],
-        "primary": "#3B0A00", "accent": "#DC2626", "accent2": "#F87171",
-        "accent3": "#FEE2E2", "text": "#1C0A00", "light_bg": "#FFF5F5",
-        "gradient_start": "#3B0A00", "gradient_end": "#991B1B",
-        "chapter_bg": "#1C0A00", "font_display": "Playfair Display",
-        "font_body": "Merriweather", "deco_shape": "leaf", "stat_color": "#DC2626",
-    },
-    "construction": {
-        "name": "Edilizia / Costruzioni",
-        "keywords": ["edilizia", "costruzione", "impresa edile", "geometra", "architetto",
-                     "cantiere", "ristrutturazione", "idraulico", "elettricista", "muratore"],
-        "primary": "#1C1917", "accent": "#EA580C", "accent2": "#FB923C",
-        "accent3": "#FED7AA", "text": "#1C1917", "light_bg": "#FFF7ED",
-        "gradient_start": "#1C1917", "gradient_end": "#7C2D12",
-        "chapter_bg": "#0C0A09", "font_display": "Barlow",
-        "font_body": "Barlow", "deco_shape": "grid", "stat_color": "#EA580C",
+        "font_body": "Inter", "stat_color": "#4F46E5",
     },
     "default": {
         "name": "Business / PMI",
         "keywords": [],
         "primary": "#1E293B", "accent": "#3B82F6", "accent2": "#60A5FA",
-        "accent3": "#BFDBFE", "text": "#1E293B", "light_bg": "#F8FAFC",
-        "gradient_start": "#1E293B", "gradient_end": "#1D4ED8",
+        "accent3": "#BFDBFE", "warm": "#F59E0B", "warm_light": "#FEF3C7",
+        "danger": "#EF4444", "danger_light": "#FEE2E2",
+        "success": "#10B981", "success_light": "#D1FAE5",
+        "info": "#3B82F6", "info_light": "#DBEAFE",
+        "text": "#1E293B", "text_light": "#64748B",
+        "light_bg": "#F8FAFC", "light_bg2": "#F1F5F9",
+        "gradient_start": "#1E293B", "gradient_mid": "#1E3A5F",
+        "gradient_end": "#1D4ED8",
         "chapter_bg": "#0F172A", "font_display": "Inter",
-        "font_body": "Inter", "deco_shape": "dots", "stat_color": "#3B82F6",
+        "font_body": "Inter", "stat_color": "#3B82F6",
     }
 }
-
-ASCII_BOX_CHARS = set('┌┐└┘├┤┬┴┼─│╔╗╚╝╠╣╦╩╬═║▼▲►◄→←↑↓')
 
 
 def detect_theme(content: str) -> dict:
     content_lower = content.lower()
     scores = {}
-    for theme_key, theme in THEMES.items():
-        if theme_key == "default":
+    for key, theme in THEMES.items():
+        if key == "default":
             continue
         score = sum(1 for kw in theme["keywords"] if kw in content_lower)
         if score > 0:
-            scores[theme_key] = score
+            scores[key] = score
     if not scores:
         return THEMES["default"]
     return THEMES[max(scores, key=scores.get)]
 
 
-# ── MARKDOWN PARSER ───────────────────────────────────────────────────────────
+# ── DOCUMENT PARSER ───────────────────────────────────────────────────────────
 
-def parse_markdown(content: str) -> dict:
+def parse_document(content: str) -> dict:
+    """Parse the manifold into structured chapters."""
     lines = content.split('\n')
+
+    # Extract header info from first ~20 lines
     doc_title = ""
     doc_subtitle = ""
     doc_market = ""
     doc_date = datetime.now().strftime("%B %Y")
 
     for line in lines[:20]:
-        if line.startswith('# ') and not re.match(r'^#\s+CAPITOLO', line, re.IGNORECASE) and not doc_title:
+        stripped = line.strip().lstrip('#').strip()
+        if line.startswith('# ') and not re.match(r'^#\s*CAPITOLO', line, re.I) and not doc_title:
             doc_title = line[2:].strip()
-        if ('— ' in line or '– ' in line) and not doc_subtitle:
-            doc_subtitle = line.strip().lstrip('#').strip()
-        if 'Mercato' in line and not doc_market:
-            doc_market = line.strip().lstrip('#').strip()
+        if ('— ' in line or '– ' in line) and 'Ricerca' in line and not doc_subtitle:
+            doc_subtitle = stripped
+        if re.match(r'^#?\s*Mercato:', line, re.I) and not doc_market:
+            doc_market = stripped.split(':', 1)[-1].strip() if ':' in stripped else stripped
 
+    # Parse chapters
     chapters = []
     current_chapter = None
-    current_content = []
+    current_lines = []
+    chapter_re = re.compile(r'^#?\s*CAPITOLO\s+(\d+)\s*[—–-]\s*(.+)', re.I)
+    sep_heavy = re.compile(r'^[═]{10,}$')
 
-    # Match both formats:
-    #   "# CAPITOLO 01 — Title"        (markdown heading)
-    #   "CAPITOLO 01 — Title"           (plain text, typically between ═══ lines)
-    chapter_re = re.compile(r'^#?\s*CAPITOLO\s+(\d+)\s*[—–-]\s*(.+)', re.IGNORECASE)
-    # Lines that are purely decorative separators (═, ━, ─, =)
-    separator_re = re.compile(r'^[═━─=]{10,}$')
-
-    for line in lines:
-        chap_match = chapter_re.match(line.strip())
-        if chap_match:
+    for i, line in enumerate(lines):
+        m = chapter_re.match(line.strip())
+        if m:
             if current_chapter is not None:
-                current_chapter['content'] = '\n'.join(current_content)
+                current_chapter['raw_lines'] = current_lines
                 chapters.append(current_chapter)
-            num = chap_match.group(1).zfill(2)
-            title = chap_match.group(2).strip()
-            # Skip "FINE CAPITOLO" markers
-            if re.match(r'FINE\s+CAPITOLO', title, re.IGNORECASE):
-                current_chapter = None
-                current_content = []
-                continue
-            current_chapter = {'number': num, 'title': title, 'content': ''}
-            current_content = []
+            num = m.group(1).zfill(2)
+            title = m.group(2).strip()
+            # Read the subtitle line (next non-separator, non-empty line)
+            subtitle = ""
+            for j in range(i+1, min(i+5, len(lines))):
+                lj = lines[j].strip()
+                if lj and not sep_heavy.match(lj) and not chapter_re.match(lj):
+                    subtitle = lj
+                    break
+            current_chapter = {'number': num, 'title': title, 'subtitle': subtitle, 'raw_lines': []}
+            current_lines = []
         else:
-            # Skip separator lines and "FINE CAPITOLO" lines
-            if re.match(r'^#?\s*FINE\s+CAPITOLO', line, re.IGNORECASE):
-                continue
-            # Skip decorative separator lines at chapter boundaries (but keep section separators in content)
-            if separator_re.match(line.strip()) and current_chapter is not None and len(current_content) < 5:
+            # Skip heavy separators at chapter boundaries
+            if sep_heavy.match(line.strip()) and current_chapter is not None and len(current_lines) < 8:
                 continue
             if current_chapter is not None:
-                current_content.append(line)
+                current_lines.append(line)
 
     if current_chapter is not None:
-        current_chapter['content'] = '\n'.join(current_content)
+        current_chapter['raw_lines'] = current_lines
         chapters.append(current_chapter)
 
     return {
-        'title': doc_title or "Market Research Brief",
+        'title': doc_title or "AI Manifold Brief",
         'subtitle': doc_subtitle or "",
         'market': doc_market or "",
         'date': doc_date,
         'chapters': chapters,
-        'raw': content,
     }
 
 
-# ── CONTENT FORMATTER ─────────────────────────────────────────────────────────
+# ── CONTENT TO HTML CONVERTER ─────────────────────────────────────────────────
 
-# Sentinel for protected blocks
-_BLOCK_SENTINEL = "XXXXXXPROTECTEDBLOCKXXXXXX"
-
-
-def is_ascii_diagram(text: str) -> bool:
-    """Check if a code block contains ASCII box-drawing art."""
-    return any(c in ASCII_BOX_CHARS for c in text)
+def esc(text: str) -> str:
+    """HTML-escape text."""
+    return html_mod.escape(text)
 
 
-def render_ascii_map(text: str, theme: dict) -> str:
-    """Render ASCII/box-drawing diagram as a styled visual card."""
-    a = theme["accent"]
-    a3 = theme["accent3"]
-    p = theme["primary"]
-    lbg = theme["light_bg"]
-    fb = theme["font_body"]
-
-    # Detect a title from the first non-empty line if it looks like a label
-    lines = text.strip().split('\n')
-    # Replace HTML special chars
-    safe = text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-
-    return f'''<div class="diagram-card">
-    <div class="diagram-body"><pre class="diagram-pre">{safe}</pre></div>
-</div>'''
-
-
-def extract_code_blocks(text: str, theme: dict):
-    """
-    Extract ``` blocks, replace with sentinels, return (modified_text, replacements_dict).
-    ASCII diagrams get special HTML rendering; code blocks get plain code styling.
-    """
-    replacements = {}
-    counter = [0]
-
-    def replacer(m):
-        lang = m.group(1).strip()
-        body = m.group(2)
-        idx = counter[0]
-        counter[0] += 1
-        key = f"{_BLOCK_SENTINEL}{idx}{_BLOCK_SENTINEL}"
-
-        if is_ascii_diagram(body):
-            replacements[key] = render_ascii_map(body, theme)
-        else:
-            safe = body.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-            replacements[key] = f'<div class="code-block"><pre><code>{safe}</code></pre></div>'
-
-        return key
-
-    modified = re.sub(r'```([^\n]*)\n([\s\S]*?)```', replacer, text)
-    return modified, replacements
-
-
-def convert_tables(text: str, theme: dict) -> str:
-    """Convert markdown tables to styled HTML. Applied BEFORE inline markdown processing."""
-    p = theme["primary"]
-    a3 = theme["accent3"]
-    gstart = theme["gradient_start"]
-    gend = theme["gradient_end"]
-
-    table_pattern = re.compile(
-        r'(?:^|\n)(\|.+\|[ \t]*\n\|[-| :\t]+\|[ \t]*\n(?:\|.+\|[ \t]*\n?)+)',
-        re.MULTILINE
-    )
-
-    def table_replacer(match):
-        raw = match.group(1) if match.lastindex else match.group(0)
-        rows = [r.strip() for r in raw.strip().split('\n')]
-        if len(rows) < 2:
-            return match.group(0)
-
-        header_cells = [c.strip() for c in rows[0].strip('|').split('|')]
-        # rows[1] is separator — skip
-        data_rows = rows[2:]
-
-        thead = '<thead><tr>' + ''.join(
-            f'<th>{apply_inline_md(c)}</th>' for c in header_cells
-        ) + '</tr></thead>'
-
-        tbody_rows = []
-        for row in data_rows:
-            row = row.strip()
-            if not row or not row.startswith('|'):
-                continue
-            cells = [c.strip() for c in row.strip('|').split('|')]
-            tbody_rows.append(
-                '<tr>' + ''.join(f'<td>{apply_inline_md(c)}</td>' for c in cells) + '</tr>'
-            )
-        tbody = '<tbody>' + ''.join(tbody_rows) + '</tbody>'
-
-        return f'\n<div class="table-wrapper"><table>{thead}{tbody}</table></div>\n'
-
-    return table_pattern.sub(table_replacer, text)
-
-
-def apply_inline_md(text: str) -> str:
-    """Apply bold and italic only — safe to call on table cells."""
-    # Bold
+def inline_md(text: str) -> str:
+    """Apply inline markdown: bold, italic."""
     text = re.sub(r'\*\*([^*\n]+)\*\*', r'<strong>\1</strong>', text)
-    # Italic
     text = re.sub(r'\*([^*\n]+)\*', r'<em>\1</em>', text)
     return text
 
 
-def format_content_to_html(md_text: str, theme: dict) -> str:
-    """
-    Convert markdown body to styled HTML.
-    Order matters:
-      1. Extract code/diagram blocks → sentinels
-      2. Convert markdown tables → HTML (BEFORE inline regex touches cell content)
-      3. Apply headings
-      4. Apply blockquote/stat-quote regex (now safe: tables already HTML)
-      5. Apply bold/italic
-      6. Convert lists
-      7. Paragraphs
-      8. Restore sentinels
-    """
-    html, code_replacements = extract_code_blocks(md_text, theme)
+def convert_chapter_content(raw_lines: list, theme: dict) -> str:
+    """Convert raw chapter lines into beautiful HTML."""
+    t = theme
+    blocks = []
+    i = 0
+    lines = raw_lines
 
-    # Step 2: Tables (before inline processing)
-    html = convert_tables(html, theme)
+    while i < len(lines):
+        line = lines[i]
+        stripped = line.strip()
 
-    # Step 3: Headings
-    html = re.sub(r'^## (.+)$', r'<h2>\1</h2>', html, flags=re.MULTILINE)
-    html = re.sub(r'^### (.+)$', r'<h3>\1</h3>', html, flags=re.MULTILINE)
-    html = re.sub(r'^#### (.+)$', r'<h4>\1</h4>', html, flags=re.MULTILINE)
-
-    # Step 4: Stat quotes — "text" — source (only in non-table, non-sentinel text)
-    html = re.sub(
-        r'"([^"\n]{10,})"[ \t]*([—–-][ \t]*[^\n\r]+)',
-        lambda m: (
-            f'<blockquote class="stat-quote">'
-            f'<span class="quote-text">&#8220;{m.group(1)}&#8221;</span>'
-            f'<cite>{m.group(2).strip(" —–-").strip()}</cite>'
-            f'</blockquote>'
-        ),
-        html
-    )
-
-    # Step 5: Bold / Italic
-    html = re.sub(r'\*\*([^*\n]+)\*\*', r'<strong>\1</strong>', html)
-    html = re.sub(r'\*([^*\n]+)\*', r'<em>\1</em>', html)
-
-    # Step 5b: Horizontal rules
-    html = re.sub(r'^---+$', r'<hr class="section-divider">', html, flags=re.MULTILINE)
-
-    # Step 6: Unordered lists
-    html = convert_ul(html)
-    # Ordered lists
-    html = convert_ol(html)
-
-    # Step 7: Paragraphs
-    paragraphs = re.split(r'\n\n+', html)
-    formatted = []
-    for para in paragraphs:
-        para = para.strip()
-        if not para:
+        # Skip empty lines
+        if not stripped:
+            i += 1
             continue
-        # Block elements — don't wrap
-        if para.startswith(('<h', '<ul', '<ol', '<blockquote', '<hr', '<table',
-                            '<div', _BLOCK_SENTINEL)):
-            formatted.append(para)
-        elif re.match(r'^' + re.escape(_BLOCK_SENTINEL), para):
-            formatted.append(para)
-        else:
-            # Stat callout: short lines with key figures
-            stripped = re.sub(r'<[^>]+>', '', para)
-            if re.search(r'(\d+[%€]|\€\s*\d+|\d+\s*euro)', stripped) and len(stripped) < 300:
-                formatted.append(f'<p class="stat-callout">{para}</p>')
+
+        # ── SECTION HEADER (━━━ ... SEZIONE N — Title ... ━━━) ──
+        if re.match(r'^[━]{10,}$', stripped):
+            # Collect section header block
+            header_lines = []
+            i += 1
+            while i < len(lines) and not re.match(r'^[━]{10,}$', lines[i].strip()):
+                if lines[i].strip():
+                    header_lines.append(lines[i].strip())
+                i += 1
+            i += 1  # skip closing ━━━
+            if header_lines:
+                main_title = header_lines[0] if header_lines else ""
+                sub_lines = header_lines[1:] if len(header_lines) > 1 else []
+                subtitle_html = '<br>'.join(esc(s) for s in sub_lines) if sub_lines else ""
+                blocks.append(f'''<div class="section-header">
+                    <div class="section-header-line"></div>
+                    <h2 class="section-title">{esc(main_title)}</h2>
+                    {"<p class='section-subtitle'>" + subtitle_html + "</p>" if subtitle_html else ""}
+                </div>''')
+            continue
+
+        # ── THIN DIVIDER (─────) ──
+        if re.match(r'^[─]{10,}$', stripped):
+            blocks.append('<hr class="thin-divider">')
+            i += 1
+            continue
+
+        # ── HEAVY SEPARATOR (═══) — skip remnants ──
+        if re.match(r'^[═]{10,}$', stripped):
+            i += 1
+            continue
+
+        # ── H2 HEADING (## ...) ──
+        m = re.match(r'^##\s+(.+)$', stripped)
+        if m:
+            blocks.append(f'<h2 class="subsection-heading">{inline_md(esc(m.group(1)))}</h2>')
+            i += 1
+            continue
+
+        # ── H3 HEADING (### ...) ──
+        m = re.match(r'^###\s+(.+)$', stripped)
+        if m:
+            blocks.append(f'<h3>{inline_md(esc(m.group(1)))}</h3>')
+            i += 1
+            continue
+
+        # ── ASCII ART / BOX-DRAWING BLOCK ──
+        # Detect lines containing box-drawing characters (even if indented)
+        box_chars = set('┌┐└┘├┤┬┴┼│╔╗╚╝╠╣╦╩╬║┃')
+        if any(c in box_chars for c in stripped):
+            art_lines = [line]
+            i += 1
+            # Collect all consecutive lines that are part of the diagram
+            # (contain box chars, or are empty lines between box-char lines, or are indented text within)
+            empty_streak = 0
+            while i < len(lines):
+                tl = lines[i]
+                ts = tl.strip()
+                has_box = any(c in box_chars for c in ts)
+                if has_box:
+                    # Add any skipped empty lines back
+                    for _ in range(empty_streak):
+                        art_lines.append('')
+                    empty_streak = 0
+                    art_lines.append(tl)
+                    i += 1
+                elif not ts:
+                    empty_streak += 1
+                    if empty_streak > 2:
+                        break
+                    i += 1
+                else:
+                    break
+            # Decide: simple table (has header row with │ cells) vs complex diagram
+            is_simple_table = (art_lines[0].strip().startswith('┌') and
+                               sum(1 for l in art_lines if '│' in l and l.strip().startswith('│')) > 2)
+            if is_simple_table:
+                blocks.append(render_ascii_table(art_lines, theme))
             else:
-                formatted.append(f'<p>{para}</p>')
+                # Complex diagram — render as a styled card preserving layout
+                blocks.append(render_ascii_diagram(art_lines, theme))
+            continue
 
-    result = '\n'.join(formatted)
+        # ── BLOCKQUOTE (> "quote") ──
+        if stripped.startswith('> '):
+            quote_lines = []
+            while i < len(lines) and lines[i].strip().startswith('> '):
+                quote_lines.append(lines[i].strip()[2:])
+                i += 1
+            quote_text = ' '.join(quote_lines)
+            # Check next line for attribution (— source)
+            attribution = ""
+            if i < len(lines) and re.match(r'^[—–-]\s*', lines[i].strip()):
+                attribution = re.sub(r'^[—–-]\s*', '', lines[i].strip())
+                i += 1
+            blocks.append(render_blockquote(quote_text, attribution, theme))
+            continue
 
-    # Step 8: Restore sentinels
-    for key, replacement in code_replacements.items():
-        result = result.replace(key, replacement)
+        # ── ARROW EMOTION ITEMS (→ LABEL: "text") ──
+        if stripped.startswith('→ '):
+            arrow_items = []
+            while i < len(lines) and lines[i].strip().startswith('→ '):
+                item_text = lines[i].strip()[2:]
+                # Collect continuation lines (indented)
+                i += 1
+                while i < len(lines) and lines[i].strip() and not lines[i].strip().startswith('→ ') \
+                        and not re.match(r'^[━═─]', lines[i].strip()) \
+                        and not lines[i].strip().startswith('> ') \
+                        and not lines[i].strip().startswith('##') \
+                        and not lines[i].strip().startswith('**') \
+                        and (lines[i].startswith('  ') or lines[i].startswith('\t')):
+                    item_text += ' ' + lines[i].strip()
+                    i += 1
+                arrow_items.append(item_text)
+            blocks.append(render_arrow_block(arrow_items, theme))
+            continue
 
-    return result
+        # ── CHECKMARK ITEMS (✓ ...) ──
+        if stripped.startswith('✓ '):
+            check_items = []
+            while i < len(lines) and lines[i].strip().startswith('✓ '):
+                item = lines[i].strip()[2:]
+                i += 1
+                # Continuation lines
+                while i < len(lines) and lines[i].strip() and not lines[i].strip().startswith('✓ ') \
+                        and not re.match(r'^[━═─\[>→#*]', lines[i].strip()) \
+                        and (lines[i].startswith('  ') or lines[i].startswith('\t')):
+                    item += ' ' + lines[i].strip()
+                    i += 1
+                check_items.append(item)
+            blocks.append(render_checklist(check_items, theme))
+            continue
 
+        # ── NUMBERED BELIEF ITEMS ([N.N] "text") ──
+        m = re.match(r'^\[(\d+\.\d+)\]\s*(.+)$', stripped)
+        if m:
+            belief_items = []
+            while i < len(lines):
+                bm = re.match(r'^\[(\d+\.\d+)\]\s*(.+)$', lines[i].strip())
+                if bm:
+                    belief_items.append((bm.group(1), bm.group(2)))
+                    i += 1
+                    # Continuation
+                    while i < len(lines) and lines[i].strip() and \
+                            not re.match(r'^\[\d+\.\d+\]', lines[i].strip()) and \
+                            not re.match(r'^[━═─>→#]', lines[i].strip()):
+                        belief_items[-1] = (belief_items[-1][0],
+                                            belief_items[-1][1] + ' ' + lines[i].strip())
+                        i += 1
+                else:
+                    break
+            blocks.append(render_belief_items(belief_items, theme))
+            continue
 
-def convert_ul(html: str) -> str:
-    lines = html.split('\n')
-    result = []
-    in_list = False
-    for line in lines:
-        if re.match(r'^[-*•]\s+', line):
-            if not in_list:
-                result.append('<ul>')
-                in_list = True
-            item = re.sub(r'^[-*•]\s+', '', line)
-            result.append(f'<li>{apply_inline_md(item)}</li>')
+        # ── DATA CALLOUT (DATI...: / DATO...: / NOTA...:) ──
+        if re.match(r'^(DATI?\s|DATO\s|NOTA\s|AVVERTIMENTO)', stripped, re.I):
+            callout_lines = [stripped]
+            i += 1
+            while i < len(lines) and lines[i].strip() and \
+                    not re.match(r'^[━═─>→#\[✓]', lines[i].strip()) and \
+                    not re.match(r'^(DATI?\s|DATO\s)', lines[i].strip(), re.I) and \
+                    not lines[i].strip().startswith('##') and \
+                    not lines[i].strip().startswith('**'):
+                callout_lines.append(lines[i].strip())
+                i += 1
+            blocks.append(render_data_callout(' '.join(callout_lines), theme))
+            continue
+
+        # ── SOURCE CITATION (Fonte: ...) ──
+        if stripped.startswith('Fonte:') or stripped.startswith('Fonti:'):
+            blocks.append(render_source(stripped, theme))
+            i += 1
+            continue
+
+        # ── FREQUENCY/ANALYSIS LABELS ──
+        if re.match(r'^(FRASE ESATTA|FREQUENZA|ANALISI|MECCANISMO|PERCHÉ|COME EVITARLO|'
+                     r'PROVA EMPIRICA|VARIANTE|VARIANTI|SOUNDBITE|LA REGOLA|'
+                     r'IMPLICAZIONE|STRUTTURA GRAMMATICALE|CONTESTO D\'USO|'
+                     r'LOGICA DI COSTRUZIONE|RAGIONAMENTO|RISPOSTA|MAPPA)\s*:', stripped, re.I):
+            label_match = re.match(r'^([^:]+):\s*(.*)', stripped)
+            if label_match:
+                label = label_match.group(1)
+                rest = label_match.group(2)
+                # Collect continuation
+                i += 1
+                while i < len(lines) and lines[i].strip() and \
+                        not re.match(r'^(FRASE|FREQUENZA|ANALISI|MECCANISMO|PERCHÉ|COME|PROVA|'
+                                     r'VARIANTE|SOUNDBITE|LA REGOLA|IMPLICAZIONE|STRUTTURA|'
+                                     r'CONTESTO|LOGICA|RAGIONAMENTO|RISPOSTA|MAPPA)\s*:', lines[i].strip(), re.I) and \
+                        not re.match(r'^[━═─>→#\[✓]', lines[i].strip()) and \
+                        not lines[i].strip().startswith('##') and \
+                        not re.match(r'^[A-Z]\.\d+\s*[—–-]', lines[i].strip()):
+                    rest += ' ' + lines[i].strip()
+                    i += 1
+                blocks.append(render_analysis_label(label, rest, theme))
+                continue
+
+        # ── PATTERN ENTRY (A.01 — "Title") with ─── divider above ──
+        m2 = re.match(r'^([A-Z]\.\d+)\s*[—–-]\s*(.+)$', stripped)
+        if m2:
+            blocks.append(f'<div class="pattern-entry-header">'
+                          f'<span class="pattern-num">{esc(m2.group(1))}</span>'
+                          f'<span class="pattern-title">{inline_md(esc(m2.group(2)))}</span>'
+                          f'</div>')
+            i += 1
+            continue
+
+        # ── BOLD PARAGRAPH OPENER (**text**) ──
+        if stripped.startswith('**') and '**' in stripped[2:]:
+            # It's a paragraph that starts with bold — render as a highlight paragraph
+            para_lines = [stripped]
+            i += 1
+            while i < len(lines) and lines[i].strip() and \
+                    not re.match(r'^[━═─>→#\[✓]', lines[i].strip()) and \
+                    not lines[i].strip().startswith('**') and \
+                    not re.match(r'^(DATI?|DATO|NOTA|Fonte)', lines[i].strip(), re.I) and \
+                    not re.match(r'^[A-Z]\.\d+\s*[—–-]', lines[i].strip()):
+                para_lines.append(lines[i].strip())
+                i += 1
+            text = ' '.join(para_lines)
+            # Check if it's a short bold-only line (like a section intro statement)
+            if re.match(r'^\*\*[^*]+\*\*$', text.strip()):
+                blocks.append(f'<p class="bold-statement">{inline_md(esc(text))}</p>')
+            else:
+                blocks.append(f'<p class="highlight-para">{inline_md(esc(text))}</p>')
+            continue
+
+        # ── ATTRIBUTION LINE (— source) after a quote that wasn't caught ──
+        if re.match(r'^[—–-]\s*.+', stripped) and not stripped.startswith('---'):
+            attr = re.sub(r'^[—–-]\s*', '', stripped)
+            blocks.append(f'<p class="attribution">— {inline_md(esc(attr))}</p>')
+            i += 1
+            continue
+
+        # ── NUMBERED LIST (1. / 2. / etc.) ──
+        if re.match(r'^\d+\.\s+', stripped):
+            ol_items = []
+            while i < len(lines) and re.match(r'^\d+\.\s+', lines[i].strip()):
+                item = re.sub(r'^\d+\.\s+', '', lines[i].strip())
+                i += 1
+                while i < len(lines) and lines[i].strip() and \
+                        not re.match(r'^\d+\.\s+', lines[i].strip()) and \
+                        not re.match(r'^[━═─>→#\[✓*]', lines[i].strip()) and \
+                        (lines[i].startswith('   ') or lines[i].startswith('\t')):
+                    item += ' ' + lines[i].strip()
+                    i += 1
+                ol_items.append(item)
+            items_html = ''.join(f'<li>{inline_md(esc(it))}</li>' for it in ol_items)
+            blocks.append(f'<ol>{items_html}</ol>')
+            continue
+
+        # ── BULLET LIST (- or • or *) ──
+        if re.match(r'^[-•*]\s+', stripped) and not stripped.startswith('**'):
+            ul_items = []
+            while i < len(lines) and re.match(r'^[-•*]\s+', lines[i].strip()):
+                item = re.sub(r'^[-•*]\s+', '', lines[i].strip())
+                i += 1
+                while i < len(lines) and lines[i].strip() and \
+                        not re.match(r'^[-•*]\s+', lines[i].strip()) and \
+                        not re.match(r'^[━═─>→#\[✓]', lines[i].strip()) and \
+                        (lines[i].startswith('  ') or lines[i].startswith('\t')):
+                    item += ' ' + lines[i].strip()
+                    i += 1
+                ul_items.append(item)
+            items_html = ''.join(f'<li>{inline_md(esc(it))}</li>' for it in ul_items)
+            blocks.append(f'<ul>{items_html}</ul>')
+            continue
+
+        # ── REGULAR PARAGRAPH ──
+        para_lines = [stripped]
+        i += 1
+        while i < len(lines) and lines[i].strip() and \
+                not re.match(r'^[━═─>→#\[✓]', lines[i].strip()) and \
+                not lines[i].strip().startswith('##') and \
+                not lines[i].strip().startswith('**') and \
+                not re.match(r'^(DATI?|DATO|NOTA|Fonte|FRASE|FREQUENZA|ANALISI)', lines[i].strip(), re.I) and \
+                not re.match(r'^[A-Z]\.\d+\s*[—–-]', lines[i].strip()) and \
+                not re.match(r'^[—–]\s', lines[i].strip()) and \
+                lines[i].strip()[0] not in '┌╔' and \
+                not lines[i].strip().startswith('> '):
+            para_lines.append(lines[i].strip())
+            i += 1
+        text = ' '.join(para_lines)
+        # Stat callout: has numbers/percentages and is short
+        clean = re.sub(r'<[^>]+>', '', text)
+        if re.search(r'(\d+[%€]|€\s*\d+|\d+\s*euro)', clean) and len(clean) < 250:
+            blocks.append(f'<p class="stat-callout">{inline_md(esc(text))}</p>')
         else:
-            if in_list:
-                result.append('</ul>')
-                in_list = False
-            result.append(line)
-    if in_list:
-        result.append('</ul>')
-    return '\n'.join(result)
+            blocks.append(f'<p>{inline_md(esc(text))}</p>')
+
+    return '\n'.join(blocks)
 
 
-def convert_ol(html: str) -> str:
-    lines = html.split('\n')
-    result = []
-    in_list = False
-    for line in lines:
-        if re.match(r'^\d+\.\s+', line):
-            if not in_list:
-                result.append('<ol>')
-                in_list = True
-            item = re.sub(r'^\d+\.\s+', '', line)
-            result.append(f'<li>{apply_inline_md(item)}</li>')
+# ── SPECIAL ELEMENT RENDERERS ─────────────────────────────────────────────────
+
+def render_blockquote(text: str, attribution: str, theme: dict) -> str:
+    return f'''<blockquote class="quote-card">
+        <div class="quote-mark">&ldquo;</div>
+        <div class="quote-body">{inline_md(esc(text))}</div>
+        {f'<cite class="quote-cite">— {inline_md(esc(attribution))}</cite>' if attribution else ''}
+    </blockquote>'''
+
+
+def render_arrow_block(items: list, theme: dict) -> str:
+    """Render → items as emotion/insight cards."""
+    cards = []
+    for item in items:
+        # Try to split LABEL: "rest"
+        m = re.match(r'^([A-ZÀÈÉÌÒÙ\s]+(?:\s+[A-ZÀÈÉÌÒÙ]+)*):\s*(.+)', item)
+        if m:
+            label = m.group(1).strip()
+            body = m.group(2).strip()
+            cards.append(f'''<div class="arrow-card">
+                <div class="arrow-icon">→</div>
+                <div class="arrow-content">
+                    <div class="arrow-label">{esc(label)}</div>
+                    <div class="arrow-body">{inline_md(esc(body))}</div>
+                </div>
+            </div>''')
         else:
-            if in_list:
-                result.append('</ol>')
-                in_list = False
-            result.append(line)
-    if in_list:
-        result.append('</ol>')
-    return '\n'.join(result)
+            cards.append(f'''<div class="arrow-card">
+                <div class="arrow-icon">→</div>
+                <div class="arrow-content">
+                    <div class="arrow-body">{inline_md(esc(item))}</div>
+                </div>
+            </div>''')
+    return f'<div class="arrow-block">{"".join(cards)}</div>'
 
 
-# ── SVG DECORATIONS ───────────────────────────────────────────────────────────
-
-def get_deco_svg(shape: str, color: str, opacity: float = 0.15) -> str:
-    svgs = {
-        "circuit": f'''<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" class="deco-svg">
-            <g stroke="{color}" stroke-width="1.5" fill="none" opacity="{opacity}">
-                <circle cx="200" cy="200" r="150"/><circle cx="200" cy="200" r="100"/>
-                <circle cx="200" cy="200" r="50"/>
-                <line x1="50" y1="200" x2="350" y2="200"/>
-                <line x1="200" y1="50" x2="200" y2="350"/>
-                <line x1="94" y1="94" x2="306" y2="306"/>
-                <line x1="306" y1="94" x2="94" y2="306"/>
-                <circle cx="200" cy="50" r="8" fill="{color}"/>
-                <circle cx="350" cy="200" r="8" fill="{color}"/>
-                <circle cx="200" cy="350" r="8" fill="{color}"/>
-                <circle cx="50" cy="200" r="8" fill="{color}"/>
-                <rect x="185" y="185" width="30" height="30" fill="{color}" opacity="0.4"/>
-            </g></svg>''',
-        "dots": f'''<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" class="deco-svg">
-            <g fill="{color}" opacity="{opacity}">
-                {''.join(f'<circle cx="{x*40+20}" cy="{y*40+20}" r="3"/>'
-                         for x in range(10) for y in range(10))}
-            </g></svg>''',
-        "arch": f'''<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" class="deco-svg">
-            <g stroke="{color}" stroke-width="2" fill="none" opacity="{opacity}">
-                <path d="M50,350 Q200,50 350,350"/>
-                <path d="M80,350 Q200,100 320,350"/>
-                <path d="M110,350 Q200,150 290,350"/>
-                <line x1="50" y1="350" x2="350" y2="350"/>
-            </g></svg>''',
-        "scale": f'''<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" class="deco-svg">
-            <g stroke="{color}" stroke-width="2" fill="none" opacity="{opacity}">
-                <line x1="200" y1="50" x2="200" y2="250"/>
-                <line x1="80" y1="150" x2="320" y2="150"/>
-                <circle cx="80" cy="250" r="60"/><circle cx="320" cy="250" r="60"/>
-                <line x1="80" y1="150" x2="80" y2="250"/>
-                <line x1="320" y1="150" x2="320" y2="250"/>
-            </g></svg>''',
-        "flower": f'''<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" class="deco-svg">
-            <g fill="{color}" opacity="{opacity}">
-                <circle cx="200" cy="130" r="50"/><circle cx="270" cy="165" r="50"/>
-                <circle cx="270" cy="235" r="50"/><circle cx="200" cy="270" r="50"/>
-                <circle cx="130" cy="235" r="50"/><circle cx="130" cy="165" r="50"/>
-                <circle cx="200" cy="200" r="40" fill="white" opacity="0.5"/>
-            </g></svg>''',
-        "cross": f'''<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" class="deco-svg">
-            <g fill="{color}" opacity="{opacity}">
-                <rect x="160" y="60" width="80" height="280" rx="10"/>
-                <rect x="60" y="160" width="280" height="80" rx="10"/>
-                <circle cx="200" cy="200" r="40" fill="white" opacity="0.3"/>
-            </g></svg>''',
-        "chart": f'''<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" class="deco-svg">
-            <g fill="{color}" opacity="{opacity}">
-                <rect x="60" y="280" width="40" height="70"/>
-                <rect x="120" y="220" width="40" height="130"/>
-                <rect x="180" y="160" width="40" height="190"/>
-                <rect x="240" y="100" width="40" height="250"/>
-                <rect x="300" y="60" width="40" height="290"/>
-                <line x1="50" y1="350" x2="360" y2="350" stroke="{color}" stroke-width="3" fill="none"/>
-                <line x1="50" y1="50" x2="50" y2="360" stroke="{color}" stroke-width="3" fill="none"/>
-            </g></svg>''',
-        "grid": f'''<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" class="deco-svg">
-            <g stroke="{color}" stroke-width="1" opacity="{opacity}">
-                {''.join(f'<line x1="{x*40}" y1="0" x2="{x*40}" y2="400"/>' for x in range(11))}
-                {''.join(f'<line x1="0" y1="{y*40}" x2="400" y2="{y*40}"/>' for y in range(11))}
-            </g>
-            <g fill="{color}" opacity="{opacity * 2}">
-                <rect x="160" y="160" width="80" height="80" rx="4"/>
-            </g></svg>''',
-        "leaf": f'''<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" class="deco-svg">
-            <g fill="{color}" opacity="{opacity}">
-                <path d="M200,50 Q350,200 200,350 Q50,200 200,50 Z"/>
-                <path d="M200,50 Q200,200 200,350" stroke="white" stroke-width="2" fill="none" opacity="0.5"/>
-                <path d="M120,180 Q200,200 280,180" stroke="white" stroke-width="1.5" fill="none" opacity="0.4"/>
-                <path d="M100,230 Q200,250 300,230" stroke="white" stroke-width="1.5" fill="none" opacity="0.4"/>
-            </g></svg>''',
-    }
-    return svgs.get(shape, svgs["dots"])
+def render_checklist(items: list, theme: dict) -> str:
+    items_html = ''.join(
+        f'<div class="check-item"><span class="check-icon">✓</span>'
+        f'<span class="check-text">{inline_md(esc(it))}</span></div>'
+        for it in items
+    )
+    return f'<div class="checklist-block">{items_html}</div>'
 
 
-# ── HTML GENERATOR ────────────────────────────────────────────────────────────
+def render_belief_items(items: list, theme: dict) -> str:
+    cards = []
+    for num, text in items:
+        cards.append(f'''<div class="belief-item">
+            <span class="belief-num">[{esc(num)}]</span>
+            <span class="belief-text">{inline_md(esc(text))}</span>
+        </div>''')
+    return f'<div class="belief-block">{"".join(cards)}</div>'
 
-def generate_html(doc: dict, theme: dict) -> str:
-    p = theme["primary"]
-    a = theme["accent"]
-    a2 = theme["accent2"]
-    a3 = theme["accent3"]
-    txt = theme["text"]
-    lbg = theme["light_bg"]
-    gstart = theme["gradient_start"]
-    gend = theme["gradient_end"]
-    cbg = theme["chapter_bg"]
-    fd = theme["font_display"]
-    fb = theme["font_body"]
-    stat_color = theme["stat_color"]
-    deco_shape = theme["deco_shape"]
+
+def render_data_callout(text: str, theme: dict) -> str:
+    # Split label from content
+    m = re.match(r'^([A-ZÀÈÉÌÒÙ\s]+(?:\s+[A-ZÀÈÉÌÒÙ]+)*):\s*(.*)', text, re.I)
+    if m:
+        label = m.group(1).strip()
+        body = m.group(2).strip()
+        return f'''<div class="data-callout">
+            <div class="data-label">{esc(label)}</div>
+            <div class="data-body">{inline_md(esc(body))}</div>
+        </div>'''
+    return f'<div class="data-callout"><div class="data-body">{inline_md(esc(text))}</div></div>'
+
+
+def render_source(text: str, theme: dict) -> str:
+    return f'<p class="source-citation">{inline_md(esc(text))}</p>'
+
+
+def render_analysis_label(label: str, body: str, theme: dict) -> str:
+    return f'''<div class="analysis-block">
+        <div class="analysis-label">{esc(label)}:</div>
+        <div class="analysis-body">{inline_md(esc(body))}</div>
+    </div>'''
+
+
+def render_ascii_diagram(art_lines: list, theme: dict) -> str:
+    """Render complex ASCII art (diagrams, maps, visual figures) as a styled card
+    preserving the exact original layout."""
+    t = theme
+    # Preserve original spacing/indentation exactly
+    safe = esc('\n'.join(art_lines))
+    return f'''<div class="ascii-diagram-card">
+        <pre class="ascii-diagram-pre">{safe}</pre>
+    </div>'''
+
+
+def render_ascii_table(table_lines: list, theme: dict) -> str:
+    """Convert ASCII box-drawing table into a beautiful HTML table."""
+    # Parse the box-drawing table
+    rows = []
+    is_header = True
+    for line in table_lines:
+        stripped = line.strip()
+        # Skip border lines
+        if re.match(r'^[┌├└╔╠╚][─═┬┼┴╦╩╬]+[┐┤┘╗╣╝]$', stripped):
+            if rows and is_header:
+                is_header = False
+            continue
+        # Data row
+        if stripped.startswith('│') or stripped.startswith('║') or stripped.startswith('┃'):
+            cells = re.split(r'[│║┃]', stripped)
+            cells = [c.strip() for c in cells if c.strip() != '']
+            if cells:
+                rows.append(('header' if is_header and not any(not is_header for _ in []) else 'data', cells))
+                if is_header and len(rows) == 1:
+                    is_header = False
+
+    if not rows:
+        # Fallback: render as preformatted
+        safe = esc('\n'.join(table_lines))
+        return f'<div class="diagram-card"><pre class="diagram-pre">{safe}</pre></div>'
+
+    # Build HTML table
+    html_parts = ['<div class="styled-table-wrapper"><table class="styled-table">']
+
+    # First row as header
+    if rows:
+        html_parts.append('<thead><tr>')
+        for cell in rows[0][1]:
+            html_parts.append(f'<th>{inline_md(esc(cell))}</th>')
+        html_parts.append('</tr></thead>')
+
+    # Rest as body (handle multi-line cells by detecting continuation rows)
+    html_parts.append('<tbody>')
+    current_row_cells = None
+    for row_type, cells in rows[1:]:
+        if len(cells) >= len(rows[0][1]) if rows[0][1] else True:
+            # Check if first cell is empty (continuation of previous row)
+            if current_row_cells and cells[0] == '' and any(c for c in cells):
+                # Merge into current row
+                for j, c in enumerate(cells):
+                    if j < len(current_row_cells) and c:
+                        current_row_cells[j] += '<br>' + inline_md(esc(c))
+            else:
+                # Flush previous row
+                if current_row_cells:
+                    html_parts.append('<tr>' + ''.join(f'<td>{c}</td>' for c in current_row_cells) + '</tr>')
+                current_row_cells = [inline_md(esc(c)) for c in cells]
+        else:
+            # Mismatched columns — try to merge
+            if current_row_cells:
+                merged = ' '.join(c for c in cells if c)
+                if merged and current_row_cells:
+                    current_row_cells[-1] += '<br>' + inline_md(esc(merged))
+
+    if current_row_cells:
+        html_parts.append('<tr>' + ''.join(f'<td>{c}</td>' for c in current_row_cells) + '</tr>')
+
+    html_parts.append('</tbody></table></div>')
+    return '\n'.join(html_parts)
+
+
+# ── HTML DOCUMENT GENERATOR ──────────────────────────────────────────────────
+
+def generate_full_html(doc: dict, theme: dict) -> str:
+    t = theme
 
     font_import = (
         f"https://fonts.googleapis.com/css2?"
-        f"family={fd.replace(' ', '+')}:wght@400;600;700;900"
-        f"&family={fb.replace(' ', '+')}:wght@300;400;500;600"
+        f"family={t['font_display'].replace(' ', '+')}:wght@400;500;600;700;800;900"
+        f"&family={t['font_body'].replace(' ', '+')}:wght@300;400;500;600;700"
         f"&display=swap"
     )
 
     # Build chapters HTML
     chapters_html = ""
     for chap in doc['chapters']:
-        body_html = format_content_to_html(chap['content'], theme)
-        deco = get_deco_svg(deco_shape, "#FFFFFF", 0.08)
-        deco_content = get_deco_svg(deco_shape, a, 0.07)
+        body_html = convert_chapter_content(chap['raw_lines'], theme)
 
         chapters_html += f'''
-<!-- CHAPTER COVER {chap["number"]} -->
-<div class="chapter-cover" style="background:linear-gradient(135deg,{cbg} 0%,{gstart} 60%,{gend} 100%);">
-  <div class="chapter-cover-deco">{deco}</div>
-  <div class="chapter-cover-inner">
-    <div class="chapter-label">CAPITOLO {chap["number"]}</div>
-    <h1 class="chapter-title">{chap["title"]}</h1>
-    <div class="chapter-accent-line"></div>
+<!-- ═══ CHAPTER {chap["number"]} COVER ═══ -->
+<div class="chapter-cover" style="background:linear-gradient(150deg,{t['chapter_bg']} 0%,{t['gradient_start']} 40%,{t['gradient_end']} 100%);">
+  <div class="ch-cover-number">{chap["number"]}</div>
+  <div class="ch-cover-inner">
+    <div class="ch-cover-label">CAPITOLO {chap["number"]}</div>
+    <h1 class="ch-cover-title">{esc(chap["title"])}</h1>
+    <div class="ch-cover-accent"></div>
+    <p class="ch-cover-subtitle">{esc(chap.get("subtitle", ""))}</p>
   </div>
-  <div class="chapter-number-bg">{chap["number"]}</div>
 </div>
 
-<!-- CHAPTER CONTENT {chap["number"]} -->
+<!-- ═══ CHAPTER {chap["number"]} CONTENT ═══ -->
 <div class="chapter-content">
-  <div class="chapter-content-deco">{deco_content}</div>
-  <div class="chapter-header-band" style="background:linear-gradient(90deg,{a} 0%,transparent 100%);">
-    <span class="chapter-header-label">CAP. {chap["number"]} — {chap["title"]}</span>
+  <div class="ch-header-band">
+    <span class="ch-header-num">CAP. {chap["number"]}</span>
+    <span class="ch-header-title">{esc(chap["title"])}</span>
   </div>
   <div class="chapter-body">
     {body_html}
   </div>
-</div>
-
-<!-- CHAPTER END {chap["number"]} -->
-<div class="chapter-end" style="background:linear-gradient(180deg,{lbg} 0%,{a3} 100%);">
-  <div class="chapter-end-inner">
-    <div class="chapter-end-line" style="background:{a};"></div>
-    <span class="chapter-end-label" style="color:{a};">Fine Capitolo {chap["number"]}</span>
-    <div class="chapter-end-line" style="background:{a};"></div>
-  </div>
-  <div class="chapter-end-deco">{get_deco_svg(deco_shape, a, 0.12)}</div>
 </div>
 '''
 
@@ -566,401 +699,723 @@ def generate_html(doc: dict, theme: dict) -> str:
     for chap in doc['chapters']:
         toc_items += f'''
 <div class="toc-item">
-  <span class="toc-num" style="color:{a};">{chap["number"]}</span>
-  <span class="toc-title">{chap["title"]}</span>
+  <div class="toc-num">{chap["number"]}</div>
+  <div class="toc-text">
+    <div class="toc-title">{esc(chap["title"])}</div>
+    <div class="toc-subtitle">{esc(chap.get("subtitle", ""))}</div>
+  </div>
 </div>'''
-
-    cover_deco = get_deco_svg(deco_shape, "#FFFFFF", 0.06)
 
     html = f'''<!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>{doc["title"]}</title>
+<title>{esc(doc["title"])}</title>
 <link href="{font_import}" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════════════════════════════════
+   MANIFOLD PDF — Professional Design System v4
+   ═══════════════════════════════════════════════════════════════════ */
+
 /* ── RESET ── */
 *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
 
-/* ── PAGE SETUP with proper margins ── */
+/* ── PAGE ── */
 @page {{
   size: A4;
-  margin: 18mm 20mm 20mm 20mm;
-}}
-
-/* Full-bleed pages (covers) override margin */
-@page cover {{
-  margin: 0;
-}}
-
-@page chapter-cover-page {{
-  margin: 0;
-}}
-
-body {{
-  font-family: '{fb}', 'Helvetica Neue', sans-serif;
-  font-size: 9.5pt;
-  line-height: 1.52;
-  color: {txt};
-  background: white;
-}}
-
-/* ── FULL-BLEED COVER PAGES ── */
-.main-cover,
-.chapter-cover,
-.chapter-end {{
-  /* Bleed to compensate for page margin */
-  margin: -18mm -20mm -20mm -20mm;
-  padding: 18mm 20mm 20mm 20mm;
-  page-break-before: always;
-  page-break-after: always;
-  page-break-inside: avoid;
-  position: relative;
-  overflow: hidden;
-}}
-
-/* ── MAIN COVER ── */
-.main-cover {{
-  min-height: 297mm;
-  background: linear-gradient(150deg, {gstart} 0%, {p} 40%, {gend} 100%);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 50mm 22mm 22mm 22mm;
-}}
-
-.main-cover-deco {{
-  position: absolute; top: -40mm; right: -40mm;
-  width: 140mm; height: 140mm;
-}}
-.main-cover-deco2 {{
-  position: absolute; bottom: -20mm; left: -30mm;
-  width: 100mm; height: 100mm;
-}}
-
-.cover-top-bar {{
-  width: 20mm; height: 2px;
-  background: {a2}; margin-bottom: 8mm;
-}}
-.cover-market-label {{
-  font-family: '{fb}', sans-serif;
-  font-size: 8pt; font-weight: 500;
-  letter-spacing: 3px; text-transform: uppercase;
-  color: {a2}; margin-bottom: 6mm;
-}}
-.cover-title {{
-  font-family: '{fd}', Georgia, serif;
-  font-size: 26pt; font-weight: 700;
-  color: #FFFFFF; line-height: 1.2;
-  margin-bottom: 6mm; max-width: 150mm;
-}}
-.cover-subtitle {{
-  font-family: '{fb}', sans-serif;
-  font-size: 10pt; font-weight: 300;
-  color: rgba(255,255,255,0.75); line-height: 1.5;
-  max-width: 130mm; margin-bottom: 15mm;
-}}
-.cover-accent-bar {{
-  width: 30mm; height: 3px;
-  background: linear-gradient(90deg, {a}, transparent);
-  margin-bottom: 15mm;
-}}
-.cover-meta {{ display: flex; flex-direction: column; gap: 2mm; }}
-.cover-meta-item {{
-  font-size: 8pt; color: rgba(255,255,255,0.55);
-  letter-spacing: 1px; text-transform: uppercase;
-}}
-.cover-bottom {{ display: flex; justify-content: space-between; align-items: flex-end; }}
-.cover-badge {{
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
-  padding: 2mm 5mm; border-radius: 2mm;
-  font-size: 7pt; color: rgba(255,255,255,0.7);
-  letter-spacing: 1.5px; text-transform: uppercase;
-}}
-
-/* ── TABLE OF CONTENTS ── */
-.toc-page {{
-  page-break-before: always;
-  page-break-after: always;
-}}
-.toc-header {{
-  margin-bottom: 10mm; padding-bottom: 4mm;
-  border-bottom: 2px solid {a3};
-}}
-.toc-label {{
-  font-size: 7pt; letter-spacing: 4px;
-  text-transform: uppercase; color: {a}; margin-bottom: 2mm;
-}}
-.toc-title-main {{
-  font-family: '{fd}', Georgia, serif;
-  font-size: 20pt; font-weight: 700; color: {p};
-}}
-.toc-item {{
-  display: flex; align-items: baseline;
-  padding: 3.5mm 0; border-bottom: 1px solid {a3}; gap: 4mm;
-}}
-.toc-num {{
-  font-family: '{fd}', monospace;
-  font-size: 9pt; font-weight: 700; min-width: 10mm; color: {a};
-}}
-.toc-title {{
-  font-family: '{fb}', sans-serif;
-  font-size: 9.5pt; color: {txt}; font-weight: 500; flex: 1;
-}}
-
-/* ── CHAPTER COVER ── */
-.chapter-cover {{
-  min-height: 297mm;
-  display: flex; flex-direction: column;
-  justify-content: center; align-items: flex-start;
-  padding: 40mm 24mm;
-}}
-.chapter-cover-deco {{
-  position: absolute; top: 0; right: 0;
-  width: 120mm; height: 120mm;
-}}
-.chapter-cover-inner {{ position: relative; z-index: 2; max-width: 145mm; }}
-.chapter-label {{
-  font-family: '{fb}', sans-serif;
-  font-size: 8pt; font-weight: 600; letter-spacing: 5px;
-  text-transform: uppercase; color: {a2}; margin-bottom: 6mm;
-}}
-.chapter-title {{
-  font-family: '{fd}', Georgia, serif;
-  font-size: 28pt; font-weight: 700;
-  color: #FFFFFF; line-height: 1.15; margin-bottom: 8mm;
-}}
-.chapter-accent-line {{
-  width: 25mm; height: 3px;
-  background: linear-gradient(90deg, {a}, transparent);
-}}
-.chapter-number-bg {{
-  position: absolute; bottom: -10mm; right: 5mm;
-  font-family: '{fd}', Georgia, serif;
-  font-size: 180pt; font-weight: 900;
-  color: rgba(255,255,255,0.04); line-height: 1;
-  user-select: none; z-index: 1;
-}}
-
-/* ── CHAPTER CONTENT ── */
-.chapter-content {{
-  page-break-before: avoid;
-}}
-.chapter-content-deco {{
-  position: absolute; top: 0; right: 0;
-  width: 55mm; height: 55mm;
-  pointer-events: none; opacity: 0.5;
-}}
-.chapter-header-band {{
-  height: 7mm; margin-bottom: 7mm;
-  display: flex; align-items: center;
-  padding-left: 4mm;
-  margin-left: -20mm; margin-right: -20mm;
-  margin-top: -18mm;
-  padding-left: 20mm;
-}}
-.chapter-header-label {{
-  font-family: '{fb}', sans-serif;
-  font-size: 7pt; font-weight: 600;
-  letter-spacing: 2px; text-transform: uppercase;
-  color: rgba(255,255,255,0.9);
-}}
-.chapter-body {{ position: relative; z-index: 2; }}
-
-/* ── TYPOGRAPHY ── */
-h2 {{
-  font-family: '{fd}', Georgia, serif;
-  font-size: 13pt; font-weight: 700; color: {p};
-  margin: 7mm 0 3mm 0;
-  padding-bottom: 1.5mm; border-bottom: 2px solid {a3};
-  page-break-after: avoid;
-}}
-h3 {{
-  font-family: '{fd}', Georgia, serif;
-  font-size: 10.5pt; font-weight: 600; color: {a};
-  margin: 5mm 0 2mm 0; page-break-after: avoid;
-}}
-h4 {{
-  font-family: '{fb}', sans-serif;
-  font-size: 8.5pt; font-weight: 700; color: {txt};
-  margin: 4mm 0 1.5mm 0;
-  text-transform: uppercase; letter-spacing: 1px;
-  page-break-after: avoid;
-}}
-p {{ margin-bottom: 2.5mm; text-align: justify; hyphens: auto; }}
-strong {{ font-weight: 700; color: {p}; }}
-em {{ font-style: italic; color: #555; }}
-
-/* ── STAT CALLOUT ── */
-p.stat-callout {{
-  background: {lbg}; border-left: 4px solid {a};
-  padding: 2mm 4mm; border-radius: 0 2mm 2mm 0;
-  font-weight: 500; color: {p}; font-size: 9pt;
-  margin: 4mm 0;
-}}
-
-/* ── BLOCKQUOTE / STAT QUOTE ── */
-blockquote.stat-quote {{
-  margin: 4mm 0; padding: 3mm 5mm 3mm 9mm;
-  background: {lbg}; border-radius: 0 2mm 2mm 0;
-  border-left: 4px solid {stat_color};
-  position: relative; page-break-inside: avoid;
-}}
-blockquote.stat-quote::before {{
-  content: '\\201C';
-  font-family: '{fd}', Georgia, serif;
-  font-size: 30pt; color: {a3};
-  position: absolute; top: -2mm; left: 2mm;
-  line-height: 1;
-}}
-.quote-text {{
-  display: block; font-style: italic;
-  color: {p}; font-size: 9pt; font-weight: 500;
-  margin-bottom: 1.5mm;
-}}
-cite {{
-  display: block; font-size: 7pt; color: {a};
-  text-align: right; font-style: normal;
-  font-weight: 600; letter-spacing: 0.5px;
-}}
-
-/* ── LISTS ── */
-ul, ol {{ margin: 2mm 0 4mm 5mm; padding-left: 4mm; }}
-li {{ margin-bottom: 1.5mm; line-height: 1.5; }}
-ul li::marker {{ color: {a}; font-size: 11pt; }}
-ol li::marker {{ color: {a}; font-weight: 700; }}
-
-/* ── TABLES ── */
-.table-wrapper {{
-  margin: 6mm 0; overflow: hidden;
-  border-radius: 3mm;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.10);
-  page-break-inside: auto;   /* allow multi-page split */
-}}
-table {{
-  width: 100%; border-collapse: collapse; font-size: 8pt;
-}}
-thead {{
-  background: linear-gradient(135deg, {p}, {gend});
-  display: table-header-group;
-}}
-thead th {{
-  color: white; font-family: '{fb}', sans-serif;
-  font-weight: 600; padding: 2mm 3.5mm;
-  text-align: left; letter-spacing: 0.4px;
-  font-size: 7.5pt; vertical-align: top;
-}}
-tbody tr {{ page-break-inside: avoid; }}
-tbody tr:nth-child(even) {{ background: {lbg}; }}
-tbody tr:nth-child(odd) {{ background: white; }}
-tbody td {{
-  padding: 2mm 3.5mm;
-  border-bottom: 1px solid {a3};
-  line-height: 1.45; vertical-align: top;
-}}
-tbody td:first-child {{ font-weight: 600; color: {p}; }}
-
-/* ── ASCII DIAGRAM CARD ── */
-.diagram-card {{
-  margin: 7mm 0;
-  background: {lbg};
-  border: 1px solid {a3};
-  border-left: 5px solid {a};
-  border-radius: 0 4mm 4mm 0;
-  padding: 5mm 6mm;
-  page-break-inside: avoid;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-}}
-.diagram-pre {{
-  font-family: 'Courier New', 'Lucida Console', monospace;
-  font-size: 8pt; line-height: 1.4;
-  color: {p}; white-space: pre;
-  overflow-x: hidden; word-wrap: break-word;
-}}
-
-/* ── CODE BLOCK ── */
-.code-block {{
-  margin: 5mm 0;
-  background: #1E293B;
-  border-radius: 3mm; padding: 4mm 5mm;
-  page-break-inside: avoid;
-}}
-.code-block pre {{ margin: 0; }}
-.code-block code {{
-  font-family: 'Courier New', monospace;
-  font-size: 8pt; color: #E2E8F0; line-height: 1.55;
-}}
-
-/* ── SECTION DIVIDER ── */
-hr.section-divider {{
-  border: none; height: 1px;
-  background: linear-gradient(90deg, transparent, {a2}, transparent);
-  margin: 7mm 0;
-}}
-
-/* ── CHAPTER END ── */
-.chapter-end {{
-  min-height: 60mm;
-  display: flex; flex-direction: column;
-  justify-content: center; align-items: center;
-}}
-.chapter-end-inner {{
-  display: flex; align-items: center;
-  gap: 5mm; z-index: 2; position: relative;
-}}
-.chapter-end-line {{ width: 30mm; height: 1px; }}
-.chapter-end-label {{
-  font-family: '{fb}', sans-serif;
-  font-size: 8pt; letter-spacing: 3px; text-transform: uppercase;
-}}
-.chapter-end-deco {{
-  position: absolute; bottom: -15mm; right: -15mm;
-  width: 70mm; height: 70mm; pointer-events: none;
-}}
-
-.deco-svg {{ width: 100%; height: 100%; }}
-
-/* ── PAGE NUMBERS ── */
-@page {{
+  margin: 18mm 20mm 22mm 20mm;
   @bottom-center {{
     content: counter(page);
-    font-family: '{fb}', sans-serif;
-    font-size: 8pt; color: {a};
+    font-family: '{t["font_body"]}', sans-serif;
+    font-size: 8pt;
+    color: {t["accent"]};
   }}
   @bottom-right {{
-    content: "{doc["title"][:40]}";
-    font-family: '{fb}', sans-serif;
-    font-size: 7pt; color: {a3};
+    content: "{esc(doc['title'][:35])}";
+    font-family: '{t["font_body"]}', sans-serif;
+    font-size: 6.5pt;
+    color: {t["accent3"]};
     letter-spacing: 0.5px;
   }}
 }}
+
+@page :first {{ margin: 0; }}
+@page cover {{ margin: 0; }}
+@page chapter-cover {{ margin: 0; }}
+
+body {{
+  font-family: '{t["font_body"]}', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 9.5pt;
+  line-height: 1.58;
+  color: {t["text"]};
+  background: white;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   COVER PAGE
+   ═══════════════════════════════════════════════════════════════════ */
+.main-cover {{
+  page: cover;
+  page-break-after: always;
+  min-height: 297mm;
+  margin: -18mm -20mm -22mm -20mm;
+  padding: 0;
+  background: linear-gradient(155deg, {t["chapter_bg"]} 0%, {t["gradient_start"]} 35%, {t["gradient_end"]} 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}}
+.cover-deco-circle {{
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.06);
+}}
+.cover-deco-circle:nth-child(1) {{ width: 400mm; height: 400mm; top: -100mm; right: -150mm; }}
+.cover-deco-circle:nth-child(2) {{ width: 300mm; height: 300mm; top: -50mm; right: -100mm; }}
+.cover-deco-circle:nth-child(3) {{ width: 200mm; height: 200mm; bottom: -60mm; left: -80mm; }}
+.cover-inner {{
+  position: relative; z-index: 2;
+  padding: 55mm 30mm 30mm 30mm;
+}}
+.cover-top-line {{
+  width: 25mm; height: 3px;
+  background: {t["accent2"]};
+  margin-bottom: 10mm;
+}}
+.cover-market {{
+  font-family: '{t["font_body"]}', sans-serif;
+  font-size: 8pt; font-weight: 600;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: {t["accent2"]}; margin-bottom: 8mm;
+}}
+.cover-title {{
+  font-family: '{t["font_display"]}', Georgia, serif;
+  font-size: 30pt; font-weight: 800;
+  color: white; line-height: 1.15;
+  margin-bottom: 6mm; max-width: 155mm;
+}}
+.cover-subtitle {{
+  font-family: '{t["font_body"]}', sans-serif;
+  font-size: 10.5pt; font-weight: 300;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.6; max-width: 140mm;
+  margin-bottom: 18mm;
+}}
+.cover-accent-bar {{
+  width: 40mm; height: 3px;
+  background: linear-gradient(90deg, {t["accent"]}, {t["accent2"]}, transparent);
+  margin-bottom: 18mm;
+}}
+.cover-meta {{
+  display: flex; flex-direction: column; gap: 3mm;
+}}
+.cover-meta span {{
+  font-size: 7.5pt; color: rgba(255,255,255,0.45);
+  letter-spacing: 2px; text-transform: uppercase;
+}}
+.cover-bottom {{
+  position: absolute; bottom: 25mm; left: 30mm; right: 30mm;
+  display: flex; justify-content: space-between;
+  z-index: 2;
+}}
+.cover-badge {{
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 2mm 6mm; border-radius: 3mm;
+  font-size: 7pt; color: rgba(255,255,255,0.5);
+  letter-spacing: 1.5px; text-transform: uppercase;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TABLE OF CONTENTS
+   ═══════════════════════════════════════════════════════════════════ */
+.toc-page {{
+  page-break-before: always;
+  page-break-after: always;
+  padding-top: 5mm;
+}}
+.toc-header {{
+  margin-bottom: 10mm;
+  padding-bottom: 5mm;
+  border-bottom: 3px solid {t["accent3"]};
+}}
+.toc-label {{
+  font-size: 7pt; letter-spacing: 5px;
+  text-transform: uppercase; color: {t["accent"]};
+  margin-bottom: 2mm;
+}}
+.toc-title-main {{
+  font-family: '{t["font_display"]}', Georgia, serif;
+  font-size: 22pt; font-weight: 800; color: {t["primary"]};
+}}
+.toc-item {{
+  display: flex; align-items: flex-start;
+  padding: 4mm 0;
+  border-bottom: 1px solid {t["accent3"]};
+  gap: 5mm;
+}}
+.toc-item:last-child {{ border-bottom: none; }}
+.toc-num {{
+  font-family: '{t["font_display"]}', monospace;
+  font-size: 11pt; font-weight: 800;
+  color: {t["accent"]}; min-width: 12mm;
+  line-height: 1.2;
+}}
+.toc-text {{ flex: 1; }}
+.toc-title {{
+  font-family: '{t["font_body"]}', sans-serif;
+  font-size: 10pt; font-weight: 600;
+  color: {t["text"]}; line-height: 1.3;
+}}
+.toc-subtitle {{
+  font-size: 8pt; color: {t["text_light"]};
+  margin-top: 1mm; line-height: 1.4;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CHAPTER COVER
+   ═══════════════════════════════════════════════════════════════════ */
+.chapter-cover {{
+  page: chapter-cover;
+  page-break-before: always;
+  page-break-after: always;
+  page-break-inside: avoid;
+  min-height: 297mm;
+  margin: -18mm -20mm -22mm -20mm;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+}}
+.ch-cover-number {{
+  position: absolute;
+  bottom: -15mm; right: -5mm;
+  font-family: '{t["font_display"]}', Georgia, serif;
+  font-size: 220pt; font-weight: 900;
+  color: rgba(255,255,255,0.03);
+  line-height: 1;
+}}
+.ch-cover-inner {{
+  position: relative; z-index: 2;
+  padding: 0 35mm;
+  max-width: 165mm;
+}}
+.ch-cover-label {{
+  font-family: '{t["font_body"]}', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 6px; text-transform: uppercase;
+  color: {t["accent2"]}; margin-bottom: 7mm;
+}}
+.ch-cover-title {{
+  font-family: '{t["font_display"]}', Georgia, serif;
+  font-size: 30pt; font-weight: 800;
+  color: white; line-height: 1.12;
+  margin-bottom: 8mm;
+}}
+.ch-cover-accent {{
+  width: 30mm; height: 3px;
+  background: linear-gradient(90deg, {t["accent"]}, {t["accent2"]});
+  margin-bottom: 10mm;
+}}
+.ch-cover-subtitle {{
+  font-family: '{t["font_body"]}', sans-serif;
+  font-size: 9.5pt; font-weight: 300;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.55;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CHAPTER CONTENT
+   ═══════════════════════════════════════════════════════════════════ */
+.chapter-content {{
+  page-break-before: avoid;
+}}
+.ch-header-band {{
+  background: linear-gradient(90deg, {t["accent"]} 0%, {t["accent2"]} 40%, transparent 100%);
+  margin: -18mm -20mm 8mm -20mm;
+  padding: 2mm 20mm;
+  display: flex; align-items: center; gap: 3mm;
+  height: 8mm;
+}}
+.ch-header-num {{
+  font-family: '{t["font_body"]}', sans-serif;
+  font-size: 7pt; font-weight: 800;
+  color: white; letter-spacing: 2px;
+}}
+.ch-header-title {{
+  font-family: '{t["font_body"]}', sans-serif;
+  font-size: 7pt; font-weight: 500;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 1px; text-transform: uppercase;
+}}
+.chapter-body {{
+  position: relative;
+  columns: 1;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Section headers (from ━━━ blocks) */
+.section-header {{
+  margin: 10mm 0 6mm 0;
+  page-break-after: avoid;
+  page-break-inside: avoid;
+}}
+.section-header-line {{
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, {t["accent"]}, {t["accent3"]}, transparent);
+  margin-bottom: 4mm;
+}}
+.section-title {{
+  font-family: '{t["font_display"]}', Georgia, serif;
+  font-size: 14pt; font-weight: 700;
+  color: {t["primary"]};
+  line-height: 1.25;
+  margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}}
+.section-subtitle {{
+  font-size: 9pt; color: {t["text_light"]};
+  margin-top: 2mm; line-height: 1.4;
+  font-style: italic;
+}}
+
+/* Subsection heading (## ) */
+h2.subsection-heading {{
+  font-family: '{t["font_display"]}', Georgia, serif;
+  font-size: 12pt; font-weight: 700;
+  color: {t["primary"]};
+  margin: 8mm 0 3mm 0;
+  padding-bottom: 2mm;
+  border-bottom: 2px solid {t["accent3"]};
+  page-break-after: avoid;
+}}
+h3 {{
+  font-family: '{t["font_display"]}', Georgia, serif;
+  font-size: 10.5pt; font-weight: 600;
+  color: {t["accent"]};
+  margin: 6mm 0 2mm 0;
+  page-break-after: avoid;
+}}
+
+/* Paragraphs */
+p {{
+  margin-bottom: 3mm;
+  text-align: justify;
+  hyphens: auto;
+}}
+p.bold-statement {{
+  font-size: 11pt;
+  font-weight: 600;
+  color: {t["primary"]};
+  line-height: 1.45;
+  margin: 6mm 0 4mm 0;
+  padding: 4mm 5mm;
+  background: {t["light_bg"]};
+  border-left: 4px solid {t["accent"]};
+  border-radius: 0 3mm 3mm 0;
+  text-align: left;
+  page-break-inside: avoid;
+}}
+p.highlight-para {{
+  margin-bottom: 3mm;
+  text-align: justify;
+}}
+p.highlight-para strong:first-child {{
+  color: {t["primary"]};
+}}
+p.stat-callout {{
+  background: {t["light_bg"]};
+  border-left: 4px solid {t["accent"]};
+  padding: 3mm 5mm;
+  border-radius: 0 2mm 2mm 0;
+  font-weight: 500;
+  color: {t["primary"]};
+  font-size: 9pt;
+  margin: 4mm 0;
+  page-break-inside: avoid;
+}}
+
+strong {{ font-weight: 700; color: {t["primary"]}; }}
+em {{ font-style: italic; color: #555; }}
+
+/* ═══════════════════════════════════════════════════════════════════
+   BLOCKQUOTES / QUOTE CARDS
+   ═══════════════════════════════════════════════════════════════════ */
+.quote-card {{
+  margin: 5mm 0;
+  padding: 5mm 6mm 4mm 14mm;
+  background: linear-gradient(135deg, {t["light_bg"]} 0%, {t["light_bg2"]} 100%);
+  border-left: 4px solid {t["accent"]};
+  border-radius: 0 4mm 4mm 0;
+  position: relative;
+  page-break-inside: avoid;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+}}
+.quote-mark {{
+  position: absolute;
+  top: 1mm; left: 3mm;
+  font-family: '{t["font_display"]}', Georgia, serif;
+  font-size: 36pt;
+  color: {t["accent3"]};
+  line-height: 1;
+}}
+.quote-body {{
+  font-style: italic;
+  font-size: 9.5pt;
+  color: {t["primary"]};
+  line-height: 1.55;
+  font-weight: 500;
+}}
+.quote-cite {{
+  display: block;
+  text-align: right;
+  font-size: 7.5pt;
+  font-style: normal;
+  font-weight: 600;
+  color: {t["accent"]};
+  margin-top: 2mm;
+  letter-spacing: 0.3px;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ARROW EMOTION CARDS
+   ═══════════════════════════════════════════════════════════════════ */
+.arrow-block {{
+  margin: 4mm 0;
+}}
+.arrow-card {{
+  display: flex;
+  align-items: flex-start;
+  gap: 3mm;
+  padding: 3mm 4mm;
+  margin-bottom: 2mm;
+  background: {t["light_bg"]};
+  border-radius: 3mm;
+  border-left: 3px solid {t["accent2"]};
+  page-break-inside: avoid;
+}}
+.arrow-icon {{
+  font-size: 12pt;
+  color: {t["accent"]};
+  font-weight: 800;
+  line-height: 1.3;
+  min-width: 5mm;
+}}
+.arrow-content {{ flex: 1; }}
+.arrow-label {{
+  font-size: 8pt;
+  font-weight: 700;
+  color: {t["accent"]};
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 1mm;
+}}
+.arrow-body {{
+  font-size: 9pt;
+  color: {t["text"]};
+  line-height: 1.5;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CHECKLIST
+   ═══════════════════════════════════════════════════════════════════ */
+.checklist-block {{
+  margin: 4mm 0;
+  padding: 4mm 5mm;
+  background: {t["success_light"]};
+  border-radius: 3mm;
+  border: 1px solid {t["success"]};
+}}
+.check-item {{
+  display: flex; align-items: flex-start;
+  gap: 3mm; padding: 1.5mm 0;
+}}
+.check-icon {{
+  color: {t["success"]};
+  font-size: 11pt; font-weight: 800;
+  line-height: 1.3; min-width: 5mm;
+}}
+.check-text {{
+  font-size: 9pt; color: {t["text"]};
+  line-height: 1.5;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   BELIEF ITEMS [N.N]
+   ═══════════════════════════════════════════════════════════════════ */
+.belief-block {{
+  margin: 4mm 0;
+}}
+.belief-item {{
+  display: flex; align-items: flex-start;
+  gap: 3mm; padding: 2mm 4mm;
+  margin-bottom: 1.5mm;
+  background: white;
+  border: 1px solid {t["accent3"]};
+  border-radius: 2mm;
+  page-break-inside: avoid;
+}}
+.belief-num {{
+  font-family: '{t["font_display"]}', monospace;
+  font-size: 8pt; font-weight: 700;
+  color: {t["accent"]};
+  min-width: 10mm;
+  line-height: 1.5;
+}}
+.belief-text {{
+  font-size: 9pt; color: {t["text"]};
+  line-height: 1.5; flex: 1;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DATA CALLOUTS
+   ═══════════════════════════════════════════════════════════════════ */
+.data-callout {{
+  margin: 4mm 0;
+  padding: 4mm 5mm;
+  background: {t["info_light"]};
+  border-left: 4px solid {t["info"]};
+  border-radius: 0 3mm 3mm 0;
+  page-break-inside: avoid;
+}}
+.data-label {{
+  font-size: 7.5pt;
+  font-weight: 700;
+  color: {t["info"]};
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 2mm;
+}}
+.data-body {{
+  font-size: 9pt;
+  color: {t["text"]};
+  line-height: 1.5;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SOURCE CITATIONS
+   ═══════════════════════════════════════════════════════════════════ */
+.source-citation {{
+  font-size: 7.5pt;
+  color: {t["text_light"]};
+  font-style: italic;
+  margin: 1mm 0 3mm 0;
+  padding-left: 3mm;
+  border-left: 2px solid {t["accent3"]};
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ATTRIBUTION LINES
+   ═══════════════════════════════════════════════════════════════════ */
+.attribution {{
+  font-size: 7.5pt;
+  color: {t["accent"]};
+  font-weight: 600;
+  text-align: right;
+  margin: -1mm 0 3mm 0;
+  letter-spacing: 0.3px;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ANALYSIS / LABEL BLOCKS
+   ═══════════════════════════════════════════════════════════════════ */
+.analysis-block {{
+  margin: 3mm 0;
+  padding: 3mm 4mm;
+  background: {t["light_bg"]};
+  border-radius: 2mm;
+  page-break-inside: avoid;
+}}
+.analysis-label {{
+  font-size: 7.5pt;
+  font-weight: 700;
+  color: {t["accent"]};
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 1.5mm;
+}}
+.analysis-body {{
+  font-size: 9pt;
+  color: {t["text"]};
+  line-height: 1.55;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PATTERN ENTRY HEADERS
+   ═══════════════════════════════════════════════════════════════════ */
+.pattern-entry-header {{
+  margin: 6mm 0 3mm 0;
+  padding: 3mm 5mm;
+  background: linear-gradient(90deg, {t["primary"]} 0%, {t["gradient_end"]} 100%);
+  border-radius: 3mm;
+  page-break-after: avoid;
+}}
+.pattern-num {{
+  font-family: '{t["font_display"]}', monospace;
+  font-size: 9pt; font-weight: 800;
+  color: {t["accent2"]};
+  margin-right: 3mm;
+}}
+.pattern-title {{
+  font-size: 10pt; font-weight: 600;
+  color: white;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TABLES
+   ═══════════════════════════════════════════════════════════════════ */
+.styled-table-wrapper {{
+  margin: 6mm 0;
+  border-radius: 3mm;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  page-break-inside: auto;
+}}
+.styled-table {{
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8pt;
+}}
+.styled-table thead {{
+  background: linear-gradient(135deg, {t["primary"]}, {t["gradient_end"]});
+  display: table-header-group;
+}}
+.styled-table thead th {{
+  color: white;
+  font-family: '{t["font_body"]}', sans-serif;
+  font-weight: 700;
+  padding: 3mm 4mm;
+  text-align: left;
+  font-size: 7.5pt;
+  letter-spacing: 0.5px;
+  vertical-align: top;
+}}
+.styled-table tbody tr {{
+  page-break-inside: avoid;
+}}
+.styled-table tbody tr:nth-child(even) {{
+  background: {t["light_bg"]};
+}}
+.styled-table tbody td {{
+  padding: 3mm 4mm;
+  border-bottom: 1px solid {t["accent3"]};
+  line-height: 1.5;
+  vertical-align: top;
+}}
+.styled-table tbody td:first-child {{
+  font-weight: 600;
+  color: {t["primary"]};
+}}
+
+/* ASCII DIAGRAM CARD — for complex visual figures */
+.ascii-diagram-card {{
+  margin: 8mm 0;
+  background: linear-gradient(135deg, {t["light_bg"]} 0%, white 50%, {t["light_bg2"]} 100%);
+  border: 2px solid {t["accent3"]};
+  border-radius: 4mm;
+  padding: 6mm 5mm;
+  page-break-inside: avoid;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  overflow-x: auto;
+}}
+.ascii-diagram-pre {{
+  font-family: 'Courier New', 'Lucida Console', monospace;
+  font-size: 7.5pt;
+  line-height: 1.3;
+  color: {t["primary"]};
+  white-space: pre;
+  margin: 0;
+  text-align: center;
+}}
+
+/* DIAGRAM fallback */
+.diagram-card {{
+  margin: 5mm 0;
+  background: {t["light_bg"]};
+  border: 1px solid {t["accent3"]};
+  border-left: 4px solid {t["accent"]};
+  border-radius: 0 3mm 3mm 0;
+  padding: 4mm 5mm;
+  page-break-inside: avoid;
+}}
+.diagram-pre {{
+  font-family: 'Courier New', monospace;
+  font-size: 7pt; line-height: 1.35;
+  color: {t["primary"]};
+  white-space: pre-wrap;
+  word-break: break-all;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LISTS
+   ═══════════════════════════════════════════════════════════════════ */
+ul, ol {{
+  margin: 3mm 0 4mm 6mm;
+  padding-left: 4mm;
+}}
+li {{
+  margin-bottom: 2mm;
+  line-height: 1.55;
+}}
+ul li::marker {{
+  color: {t["accent"]};
+  font-size: 11pt;
+}}
+ol li::marker {{
+  color: {t["accent"]};
+  font-weight: 700;
+}}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DIVIDERS
+   ═══════════════════════════════════════════════════════════════════ */
+hr.thin-divider {{
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, {t["accent3"]}, transparent);
+  margin: 6mm 0;
+}}
+
 </style>
 </head>
 <body>
 
-<!-- ═══ MAIN COVER ═══ -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     MAIN COVER
+     ═══════════════════════════════════════════════════════════════════ -->
 <div class="main-cover">
-  <div class="main-cover-deco">{get_deco_svg(deco_shape, "#FFFFFF", 0.04)}</div>
-  <div class="main-cover-deco2">{get_deco_svg(deco_shape, a2, 0.04)}</div>
-  <div>
-    <div class="cover-top-bar"></div>
-    <div class="cover-market-label">{doc["market"] or "Market Research Brief"}</div>
-    <h1 class="cover-title">{doc["title"]}</h1>
-    <div class="cover-subtitle">{doc["subtitle"]}</div>
+  <div class="cover-deco-circle"></div>
+  <div class="cover-deco-circle"></div>
+  <div class="cover-deco-circle"></div>
+  <div class="cover-inner">
+    <div class="cover-top-line"></div>
+    <div class="cover-market">{esc(doc["market"] or "Market Research Brief")}</div>
+    <h1 class="cover-title">{esc(doc["title"])}</h1>
+    <p class="cover-subtitle">{esc(doc["subtitle"])}</p>
     <div class="cover-accent-bar"></div>
     <div class="cover-meta">
-      <span class="cover-meta-item">Documento Riservato · {doc["date"]}</span>
-      <span class="cover-meta-item">Ricerca di Mercato Professionale · {len(doc["chapters"])} Capitoli</span>
+      <span>Documento Riservato · {doc["date"]}</span>
+      <span>AI Manifold Brief · {len(doc["chapters"])} Capitoli</span>
     </div>
   </div>
   <div class="cover-bottom">
     <div class="cover-badge">Confidential Research Report</div>
-    <div class="cover-badge">&copy; {datetime.now().year} — All Rights Reserved</div>
+    <div class="cover-badge">&copy; {datetime.now().year}</div>
   </div>
 </div>
 
-<!-- ═══ TABLE OF CONTENTS ═══ -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     TABLE OF CONTENTS
+     ═══════════════════════════════════════════════════════════════════ -->
 <div class="toc-page">
   <div class="toc-header">
     <div class="toc-label">Indice dei Capitoli</div>
@@ -969,7 +1424,9 @@ hr.section-divider {{
   {toc_items}
 </div>
 
-<!-- ═══ CHAPTERS ═══ -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTERS
+     ═══════════════════════════════════════════════════════════════════ -->
 {chapters_html}
 
 </body>
@@ -981,11 +1438,11 @@ hr.section-divider {{
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="Generate professional PDF from manifold markdown")
-    parser.add_argument("input", help="Input markdown file")
+    parser = argparse.ArgumentParser(description="Generate professional PDF from manifold")
+    parser.add_argument("input", help="Input text file")
     parser.add_argument("output", nargs="?", help="Output PDF file")
-    parser.add_argument("--title", help="Override document title (client/project name)")
-    parser.add_argument("--subtitle", help="Override document subtitle (product description)")
+    parser.add_argument("--title", help="Override document title")
+    parser.add_argument("--subtitle", help="Override document subtitle")
     args = parser.parse_args()
 
     input_path = Path(args.input)
@@ -1006,9 +1463,8 @@ def main():
     print(f"   Theme: {theme['name']}")
 
     print("📐 Parsing document structure...")
-    doc = parse_markdown(content)
+    doc = parse_document(content)
 
-    # Override title/subtitle from CLI args (project metadata)
     if args.title:
         doc['title'] = args.title
         if not doc['subtitle']:
@@ -1020,9 +1476,11 @@ def main():
 
     print(f"   Title: {doc['title']}")
     print(f"   Chapters: {len(doc['chapters'])}")
+    for chap in doc['chapters']:
+        print(f"     Cap. {chap['number']}: {chap['title']} ({len(chap['raw_lines'])} lines)")
 
-    print("🖌  Generating themed HTML...")
-    html = generate_html(doc, theme)
+    print("🖌  Generating HTML...")
+    html = generate_full_html(doc, theme)
 
     html_path = output_path.with_suffix('.html')
     html_path.write_text(html, encoding='utf-8')
@@ -1033,18 +1491,20 @@ def main():
         print("📄 Converting to PDF with WeasyPrint...")
         weasyprint.HTML(filename=str(html_path)).write_pdf(str(output_path))
         html_path.unlink()
+        size_mb = output_path.stat().st_size / (1024 * 1024)
         print(f"\n✅ PDF created: {output_path}")
+        print(f"   Size: {size_mb:.1f} MB")
         return
     except ImportError:
-        print("   WeasyPrint not found, trying alternatives...")
+        print("   WeasyPrint not found, trying wkhtmltopdf...")
     except Exception as e:
         print(f"   WeasyPrint error: {e}")
 
-    # Fallback: wkhtmltopdf
+    import subprocess
     try:
         result = subprocess.run(
             ['wkhtmltopdf', '--page-size', 'A4',
-             '--margin-top', '18mm', '--margin-bottom', '20mm',
+             '--margin-top', '18mm', '--margin-bottom', '22mm',
              '--margin-left', '20mm', '--margin-right', '20mm',
              '--enable-local-file-access', '--print-media-type',
              '--footer-center', '[page]', '--footer-font-size', '8',
@@ -1060,7 +1520,7 @@ def main():
         pass
 
     print(f"\n⚠️  Delivered as HTML: {html_path}")
-    print("Install WeasyPrint:  pip install weasyprint && brew install pango")
+    print("Install WeasyPrint: pip install weasyprint")
 
 
 if __name__ == '__main__':
