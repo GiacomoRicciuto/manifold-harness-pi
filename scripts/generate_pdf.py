@@ -133,7 +133,7 @@ def parse_markdown(content: str) -> dict:
     doc_date = datetime.now().strftime("%B %Y")
 
     for line in lines[:20]:
-        if line.startswith('# ') and not re.match(r'^#\s+CAPITOLO', line) and not doc_title:
+        if line.startswith('# ') and not re.match(r'^#\s+CAPITOLO', line, re.IGNORECASE) and not doc_title:
             doc_title = line[2:].strip()
         if ('— ' in line or '– ' in line) and not doc_subtitle:
             doc_subtitle = line.strip().lstrip('#').strip()
@@ -144,15 +144,22 @@ def parse_markdown(content: str) -> dict:
     current_chapter = None
     current_content = []
 
+    # Match both formats:
+    #   "# CAPITOLO 01 — Title"        (markdown heading)
+    #   "CAPITOLO 01 — Title"           (plain text, typically between ═══ lines)
+    chapter_re = re.compile(r'^#?\s*CAPITOLO\s+(\d+)\s*[—–-]\s*(.+)', re.IGNORECASE)
+    # Lines that are purely decorative separators (═, ━, ─, =)
+    separator_re = re.compile(r'^[═━─=]{10,}$')
+
     for line in lines:
-        chap_match = re.match(r'^#\s+CAPITOLO\s+(\d+)\s*[—–-]\s*(.+)', line)
+        chap_match = chapter_re.match(line.strip())
         if chap_match:
             if current_chapter is not None:
                 current_chapter['content'] = '\n'.join(current_content)
                 chapters.append(current_chapter)
             num = chap_match.group(1).zfill(2)
             title = chap_match.group(2).strip()
-            # Strip trailing metadata like "# FINE CAPITOLO ..."
+            # Skip "FINE CAPITOLO" markers
             if re.match(r'FINE\s+CAPITOLO', title, re.IGNORECASE):
                 current_chapter = None
                 current_content = []
@@ -160,8 +167,11 @@ def parse_markdown(content: str) -> dict:
             current_chapter = {'number': num, 'title': title, 'content': ''}
             current_content = []
         else:
-            # Skip "# FINE CAPITOLO" lines
-            if re.match(r'^#\s+FINE\s+CAPITOLO', line):
+            # Skip separator lines and "FINE CAPITOLO" lines
+            if re.match(r'^#?\s*FINE\s+CAPITOLO', line, re.IGNORECASE):
+                continue
+            # Skip decorative separator lines at chapter boundaries (but keep section separators in content)
+            if separator_re.match(line.strip()) and current_chapter is not None and len(current_content) < 5:
                 continue
             if current_chapter is not None:
                 current_content.append(line)
